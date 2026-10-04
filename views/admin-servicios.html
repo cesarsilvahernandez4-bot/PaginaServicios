@@ -3,198 +3,245 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Gestión de Servicios | Administrador</title>
+    <meta name="robots" content="noindex">
+    <title>Gestión de Servicios | Panel Ambulancias de los Llanos</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link href="styles.css" rel="stylesheet">
-    <style>
-        .admin-container { padding: 40px 20px; max-width: 1200px; margin: 0 auto; }
-        .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-        .table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
-        .table th, .table td { padding: 12px; border: 1px solid #ddd; text-align: left; }
-        .table th { background-color: #003049; color: #fff; }
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; }
-        .modal-content { background: #fff; padding: 30px; border-radius: 8px; width: 100%; max-width: 500px; }
-        .form-group { margin-bottom: 15px; }
-        .form-control { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
-        .action-btns button { padding: 5px 10px; margin-right: 5px; cursor: pointer; border: none; border-radius: 3px; color: #fff; }
-        .btn-edit { background-color: #2A9D8F; }
-        .btn-delete { background-color: #D62828; }
-        .admin-nav { margin-bottom: 20px; display: flex; gap: 10px; }
-    </style>
+    <link href="admin.css" rel="stylesheet">
 </head>
-<body>
-    <header class="site-header">
-        <div class="container header-inner">
-            <a class="logo" href="index.html">
-                <span class="logo-text">Ambulancias <strong>de los Llanos</strong></span>
-            </a>
-            <nav class="main-nav">
-                <ul class="nav-list">
-                    <li><a class="nav-link" href="#" id="logoutBtn">Cerrar Sesión</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
+<body class="admin-body">
+    <div class="admin-layout">
+        <aside class="sidebar" id="sidebar"></aside>
 
-    <main class="admin-container">
-        <div class="admin-nav" id="adminNavLinks">
-            <a href="admin-servicios.html" class="btn btn-primary">Gestión de Servicios</a>
-            <!-- El enlace a usuarios se inyecta por JS si es admin -->
-        </div>
+        <main class="admin-main">
+            <div class="admin-topbar">
+                <div>
+                    <h1>Gestión de Servicios</h1>
+                    <p>Administra los servicios TAB, TAM, Eventos y Domiciliario que se muestran en el sitio público.</p>
+                </div>
+                <button class="btn btn-primary" id="btn-nuevo-servicio" type="button">+ Nuevo servicio</button>
+            </div>
 
-        <div class="admin-header">
-            <h2>Gestión de Servicios</h2>
-            <button class="btn btn-primary" onclick="openModal()">Nuevo Servicio</button>
-        </div>
+            <section class="stats" id="stats"></section>
 
-        <table class="table" id="servicesTable">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Precio</th>
-                    <th>Estado</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Contenido dinámico -->
-            </tbody>
-        </table>
-    </main>
-
-    <!-- Modal Formulario -->
-    <div id="serviceModal" class="modal">
-        <div class="modal-content">
-            <h3 id="modalTitle">Nuevo Servicio</h3>
-            <form id="serviceForm">
-                <input type="hidden" id="serviceId">
-                <div class="form-group">
-                    <label>Nombre</label>
-                    <input type="text" id="nombre" class="form-control" required>
+            <section class="panel">
+                <div class="panel-toolbar">
+                    <input class="search-input" id="buscar-servicio" type="search" placeholder="Buscar por nombre o descripción...">
+                    <div class="chip-group" id="filtro-categoria">
+                        <button class="chip is-active" data-cat="" type="button">Todos</button>
+                        <button class="chip" data-cat="TAB" type="button">TAB</button>
+                        <button class="chip" data-cat="TAM" type="button">TAM</button>
+                        <button class="chip" data-cat="Eventos" type="button">Eventos</button>
+                        <button class="chip" data-cat="Domiciliario" type="button">Domiciliario</button>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label>Descripción</label>
-                    <textarea id="descripcion" class="form-control" rows="3" required></textarea>
+                <div class="table-wrap">
+                    <table class="data-table" id="tabla-servicios">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Servicio</th>
+                                <th>Categoría</th>
+                                <th>Precio referencial</th>
+                                <th>Estado</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody><tr><td colspan="6" class="empty-state">Cargando servicios...</td></tr></tbody>
+                    </table>
                 </div>
-                <div class="form-group">
-                    <label>Precio Referencial</label>
-                    <input type="number" id="precio" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label>URL Imagen</label>
-                    <input type="text" id="imagen" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label>Estado</label>
-                    <select id="estado" class="form-control" required>
-                        <option value="Activo">Activo</option>
-                        <option value="Inactivo">Inactivo</option>
-                    </select>
-                </div>
-                <div style="text-align: right; margin-top: 20px;">
-                    <button type="button" class="btn btn-outline" onclick="closeModal()">Cancelar</button>
-                    <button type="submit" class="btn btn-primary">Guardar</button>
-                </div>
-            </form>
-        </div>
+            </section>
+        </main>
     </div>
 
+    <dialog class="modal-dialog" id="modal-servicio">
+        <form id="form-servicio" method="dialog">
+            <div class="modal-head">
+                <h2 id="modal-titulo">Nuevo servicio</h2>
+                <button class="icon-btn" type="button" id="btn-cerrar-modal" aria-label="Cerrar">✕</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="servicio-id">
+                <div class="field">
+                    <label for="servicio-nombre">Nombre</label>
+                    <input id="servicio-nombre" required maxlength="255">
+                </div>
+                <div class="row-2">
+                    <div class="field">
+                        <label for="servicio-categoria">Categoría</label>
+                        <select id="servicio-categoria" required>
+                            <option value="TAB">TAB - Traslado Asistencial Básico</option>
+                            <option value="TAM">TAM - Traslado Asistencial Medicalizado</option>
+                            <option value="Eventos">Eventos</option>
+                            <option value="Domiciliario">Domiciliario</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label for="servicio-estado">Estado</label>
+                        <select id="servicio-estado">
+                            <option value="Activo">Activo (visible)</option>
+                            <option value="Inactivo">Inactivo (oculto)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="servicio-descripcion">Descripción</label>
+                    <textarea id="servicio-descripcion" rows="3" required></textarea>
+                </div>
+                <div class="row-2">
+                    <div class="field">
+                        <label for="servicio-precio">Precio referencial (COP)</label>
+                        <input id="servicio-precio" type="number" min="0" step="1000">
+                    </div>
+                    <div class="field">
+                        <label for="servicio-imagen">Imagen</label>
+                        <input id="servicio-imagen" list="imagenes-disponibles" placeholder="img/TAB.png">
+                        <datalist id="imagenes-disponibles">
+                            <option value="img/TAB.png"><option value="img/TAM.png"><option value="img/evento.jpg">
+                            <option value="img/Recojer.jpg"><option value="img/Portada.jpg"><option value="img/GentePose.jpg">
+                        </datalist>
+                        <p class="hint">Ruta local (img/...) o URL pública.</p>
+                    </div>
+                </div>
+                <div class="img-preview" id="preview-imagen"></div>
+                <p class="form-error" id="error-servicio"></p>
+            </div>
+            <div class="modal-foot">
+                <button class="btn btn-outline" type="button" id="btn-cancelar">Cancelar</button>
+                <button class="btn btn-primary" type="submit" id="btn-guardar-servicio">Guardar</button>
+            </div>
+        </form>
+    </dialog>
+
+    <script src="js/admin.js"></script>
     <script>
-        const API_URL = '/api/servicios';
+        const { api, toast, esc, ICONS } = Admin;
+        const $ = (id) => document.getElementById(id);
+        const modal = $('modal-servicio');
+        const moneda = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 });
+        let servicios = [];
+        let filtroCat = '';
 
-        // Validar sesión
-        const user = JSON.parse(localStorage.getItem('user'));
-        if (!user) {
-            window.location.href = 'login.html';
+        function renderStats() {
+            const activos = servicios.filter((s) => s.estado === 'Activo').length;
+            const cards = [
+                ['Total servicios', servicios.length, 'var(--azul)'],
+                ['Activos', activos, 'var(--verde)'],
+                ['Inactivos', servicios.length - activos, 'var(--texto-suave)'],
+                ['Categorías', new Set(servicios.map((s) => s.categoria)).size, 'var(--rojo)']
+            ];
+            $('stats').innerHTML = cards.map(([l, v, c]) =>
+                `<div class="stat-card" style="--accent:${c}"><div class="stat-label">${l}</div><div class="stat-value">${v}</div></div>`).join('');
         }
 
-        // Mostrar enlace de usuarios solo si es Administrador
-        if (user.rol === 'Administrador') {
-            document.getElementById('adminNavLinks').innerHTML += `<a href="admin-usuarios.html" class="btn btn-outline">Gestión de Usuarios</a>`;
-        }
-
-        document.getElementById('logoutBtn').addEventListener('click', () => {
-            localStorage.removeItem('user');
-            window.location.href = 'login.html';
-        });
-
-        async function fetchServices() {
-            const res = await fetch(API_URL);
-            const data = await res.json();
-            const tbody = document.querySelector('#servicesTable tbody');
-            tbody.innerHTML = '';
-            data.forEach(s => {
-                tbody.innerHTML += `
-                    <tr>
-                        <td>${s.id}</td>
-                        <td>${s.nombre}</td>
-                        <td>$${s.precio}</td>
-                        <td>${s.estado}</td>
-                        <td class="action-btns">
-                            <button class="btn-edit" onclick='editService(${JSON.stringify(s).replace(/'/g, "\\'")})'>Editar</button>
-                            <button class="btn-delete" onclick="deleteService(${s.id})">Eliminar</button>
-                        </td>
-                    </tr>
-                `;
-            });
-        }
-
-        function openModal() {
-            document.getElementById('serviceForm').reset();
-            document.getElementById('serviceId').value = '';
-            document.getElementById('modalTitle').innerText = 'Nuevo Servicio';
-            document.getElementById('serviceModal').style.display = 'flex';
-        }
-
-        function closeModal() {
-            document.getElementById('serviceModal').style.display = 'none';
-        }
-
-        function editService(service) {
-            document.getElementById('serviceId').value = service.id;
-            document.getElementById('nombre').value = service.nombre;
-            document.getElementById('descripcion').value = service.descripcion;
-            document.getElementById('precio').value = service.precio;
-            document.getElementById('imagen').value = service.imagen;
-            document.getElementById('estado').value = service.estado;
-            document.getElementById('modalTitle').innerText = 'Editar Servicio';
-            document.getElementById('serviceModal').style.display = 'flex';
-        }
-
-        document.getElementById('serviceForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const id = document.getElementById('serviceId').value;
-            const payload = {
-                nombre: document.getElementById('nombre').value,
-                descripcion: document.getElementById('descripcion').value,
-                precio: document.getElementById('precio').value,
-                imagen: document.getElementById('imagen').value,
-                estado: document.getElementById('estado').value
-            };
-
-            const method = id ? 'PUT' : 'POST';
-            const url = id ? `${API_URL}/${id}` : API_URL;
-
-            await fetch(url, {
-                method,
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-
-            closeModal();
-            fetchServices();
-        });
-
-        async function deleteService(id) {
-            if (confirm('¿Está seguro de eliminar este servicio?')) {
-                await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
-                fetchServices();
+        function renderTabla() {
+            const q = $('buscar-servicio').value.trim().toLowerCase();
+            const lista = servicios.filter((s) =>
+                (!filtroCat || s.categoria === filtroCat) &&
+                (!q || `${s.nombre} ${s.descripcion}`.toLowerCase().includes(q)));
+            const tbody = document.querySelector('#tabla-servicios tbody');
+            if (!lista.length) {
+                tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No hay servicios que coincidan.</td></tr>';
+                return;
             }
+            tbody.innerHTML = lista.map((s) => `
+                <tr>
+                    <td>#${s.id}</td>
+                    <td>
+                        <div class="cell-main">
+                            <img src="${esc(s.imagen || 'img/Portada.jpg')}" alt="" onerror="this.src='img/Portada.jpg'">
+                            <div><div class="cell-title">${esc(s.nombre)}</div><div class="cell-sub">${esc(s.descripcion)}</div></div>
+                        </div>
+                    </td>
+                    <td><span class="badge-pill badge-cat">${esc(s.categoria || '-')}</span></td>
+                    <td>${s.precio != null ? moneda.format(s.precio) : '—'}</td>
+                    <td><span class="badge-pill ${s.estado === 'Activo' ? 'badge-ok' : 'badge-off'}">${esc(s.estado)}</span></td>
+                    <td><div class="row-actions">
+                        <button class="icon-btn" title="Editar" data-edit="${s.id}" id="editar-servicio-${s.id}">${ICONS.edit}</button>
+                        <button class="icon-btn danger" title="Eliminar" data-del="${s.id}" id="eliminar-servicio-${s.id}">${ICONS.trash}</button>
+                    </div></td>
+                </tr>`).join('');
         }
 
-        // Init
-        fetchServices();
+        async function cargar() {
+            try {
+                servicios = await api('/api/servicios');
+                renderStats();
+                renderTabla();
+            } catch (e) { toast(e.message, 'error'); }
+        }
+
+        function actualizarPreview() {
+            const url = $('servicio-imagen').value.trim();
+            $('preview-imagen').style.backgroundImage = url ? `url("${url.replace(/"/g, '')}")` : 'none';
+        }
+
+        function abrirModal(s = null) {
+            $('form-servicio').reset();
+            $('error-servicio').textContent = '';
+            $('servicio-id').value = s ? s.id : '';
+            $('modal-titulo').textContent = s ? 'Editar servicio' : 'Nuevo servicio';
+            if (s) {
+                $('servicio-nombre').value = s.nombre;
+                $('servicio-categoria').value = s.categoria || 'TAB';
+                $('servicio-estado').value = s.estado;
+                $('servicio-descripcion').value = s.descripcion || '';
+                $('servicio-precio').value = s.precio != null ? Math.round(s.precio) : '';
+                $('servicio-imagen').value = s.imagen || '';
+            }
+            actualizarPreview();
+            modal.showModal();
+        }
+
+        $('form-servicio').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = $('servicio-id').value;
+            const body = {
+                nombre: $('servicio-nombre').value,
+                categoria: $('servicio-categoria').value,
+                estado: $('servicio-estado').value,
+                descripcion: $('servicio-descripcion').value,
+                precio: $('servicio-precio').value,
+                imagen: $('servicio-imagen').value
+            };
+            try {
+                await api(id ? `/api/servicios/${id}` : '/api/servicios', { method: id ? 'PUT' : 'POST', body });
+                modal.close();
+                toast(id ? 'Servicio actualizado' : 'Servicio creado');
+                cargar();
+            } catch (err) { $('error-servicio').textContent = err.message; }
+        });
+
+        document.querySelector('#tabla-servicios tbody').addEventListener('click', async (e) => {
+            const edit = e.target.closest('[data-edit]');
+            const del = e.target.closest('[data-del]');
+            if (edit) abrirModal(servicios.find((s) => s.id == edit.dataset.edit));
+            if (del && confirm('¿Eliminar este servicio? Esta acción no se puede deshacer.')) {
+                try {
+                    await api(`/api/servicios/${del.dataset.del}`, { method: 'DELETE' });
+                    toast('Servicio eliminado');
+                    cargar();
+                } catch (err) { toast(err.message, 'error'); }
+            }
+        });
+
+        $('filtro-categoria').addEventListener('click', (e) => {
+            const chip = e.target.closest('.chip');
+            if (!chip) return;
+            document.querySelectorAll('#filtro-categoria .chip').forEach((c) => c.classList.toggle('is-active', c === chip));
+            filtroCat = chip.dataset.cat;
+            renderTabla();
+        });
+
+        $('buscar-servicio').addEventListener('input', renderTabla);
+        $('servicio-imagen').addEventListener('input', actualizarPreview);
+        $('btn-nuevo-servicio').addEventListener('click', () => abrirModal());
+        $('btn-cancelar').addEventListener('click', () => modal.close());
+        $('btn-cerrar-modal').addEventListener('click', () => modal.close());
+
+        Admin.init({ active: 'servicios', roles: ['Administrador', 'Operador'] }).then(cargar).catch(() => {});
     </script>
 </body>
 </html>

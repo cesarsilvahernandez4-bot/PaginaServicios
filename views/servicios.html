@@ -59,6 +59,7 @@
                  ======================================================== -->
             <section class="section">
                 <div class="container">
+                    <div class="service-filter" id="filtro-servicios" role="toolbar" aria-label="Filtrar por tipo de servicio"></div>
                     <div class="service-grid" id="servicios-container-detailed">
                         <p style="text-align: center; width: 100%;">Cargando servicios detallados...</p>
                     </div>
@@ -121,45 +122,63 @@
         </a>
         
         <script>
+            // RF02 / RF07 / RF10: servicios activos consultados desde la base de datos
+            const NOMBRES_CATEGORIA = { TAB: 'Traslado Básico', TAM: 'Medicalizado', Eventos: 'Eventos', Domiciliario: 'Domiciliario' };
+            const esc = (v) => String(v ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+            const moneda = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 });
+            let servicios = [];
+
+            function render(categoria) {
+                const container = document.getElementById('servicios-container-detailed');
+                const lista = categoria ? servicios.filter(s => s.categoria === categoria) : servicios;
+                if (lista.length === 0) {
+                    container.innerHTML = '<p style="text-align:center; width:100%;">No hay servicios disponibles en esta categoría.</p>';
+                    return;
+                }
+                container.innerHTML = lista.map((s, i) => `
+                    <article class="service-card is-entering" style="animation-delay:${i * 80}ms">
+                        <div class="service-media">
+                            <img src="${esc(s.imagen || 'img/Portada.jpg')}" alt="${esc(s.nombre)}" loading="lazy" onerror="this.src='img/Portada.jpg'">
+                        </div>
+                        <div class="service-content">
+                            ${s.categoria ? `<span class="service-tag">${esc(NOMBRES_CATEGORIA[s.categoria] || s.categoria)}</span>` : ''}
+                            <h2>${esc(s.nombre)}</h2>
+                            <p>${esc(s.descripcion)}</p>
+                            ${s.precio != null ? `<p class="service-price">Precio referencial: <strong>desde ${moneda.format(s.precio)}</strong></p>` : ''}
+                            <div class="service-actions">
+                                <a class="btn btn-primary" href="contacto.html?servicio=${encodeURIComponent(s.categoria || '')}">Solicitar información</a>
+                            </div>
+                        </div>
+                    </article>`).join('');
+            }
+
+            function renderFiltros() {
+                const filtro = document.getElementById('filtro-servicios');
+                const cats = Object.keys(NOMBRES_CATEGORIA).filter(c => servicios.some(s => s.categoria === c));
+                filtro.innerHTML = [`<button class="filter-chip is-active" data-cat="" type="button" id="filtro-todos">Todos</button>`]
+                    .concat(cats.map(c => `<button class="filter-chip" data-cat="${c}" type="button" id="filtro-${c.toLowerCase()}">${c}</button>`))
+                    .join('');
+                filtro.addEventListener('click', (e) => {
+                    const chip = e.target.closest('.filter-chip');
+                    if (!chip) return;
+                    filtro.querySelectorAll('.filter-chip').forEach(c => c.classList.toggle('is-active', c === chip));
+                    render(chip.dataset.cat);
+                });
+            }
+
             async function cargarServicios() {
                 try {
                     const res = await fetch('/api/servicios');
-                    const servicios = await res.json();
-                    const container = document.getElementById('servicios-container-detailed');
-                    container.innerHTML = '';
-                    
-                    const activos = servicios.filter(s => s.estado === 'Activo');
-                    
-                    if (activos.length === 0) {
-                        container.innerHTML = '<p style="text-align:center; width:100%;">No hay servicios disponibles en este momento.</p>';
-                        return;
-                    }
-
-                    activos.forEach(s => {
-                        const precioFormateado = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(s.precio);
-                        
-                        container.innerHTML += `
-                            <article class="service-card">
-                                <div class="service-media">
-                                    <img src="${s.imagen}" alt="${s.nombre}" onerror="this.src='img/Portada.jpg'">
-                                </div>
-                                <div class="service-content">
-                                    <h2>${s.nombre}</h2>
-                                    <p>${s.descripcion}</p>
-                                    <p class="service-price">Precio referencial: <strong>desde ${precioFormateado}</strong></p>
-                                    <div class="service-actions">
-                                        <a class="btn btn-primary" href="contacto.html">Solicitar información</a>
-                                    </div>
-                                </div>
-                            </article>
-                        `;
-                    });
+                    if (!res.ok) throw new Error('Respuesta inválida');
+                    servicios = await res.json();
+                    renderFiltros();
+                    render('');
                 } catch (error) {
                     console.error('Error cargando servicios:', error);
                     document.getElementById('servicios-container-detailed').innerHTML = '<p style="text-align:center; width:100%;">Error al cargar los servicios.</p>';
                 }
             }
-            
+
             document.addEventListener('DOMContentLoaded', cargarServicios);
         </script>
     </body>

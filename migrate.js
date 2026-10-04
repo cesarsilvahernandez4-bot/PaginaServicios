@@ -1,17 +1,13 @@
 require('dotenv').config();
-const fs = require('fs');
-const path = require('path');
 const db = require('./config/db');
+const initDb = require('./config/initDb');
 
+// Crea/actualiza las tablas y siembra los datos iniciales (idempotente).
 async function runMigration() {
     try {
         console.log('Conectando a la base de datos...');
-        const sqlPath = path.join(__dirname, 'supabase_schema.sql');
-        const sql = fs.readFileSync(sqlPath, 'utf8');
-        
-        console.log('Ejecutando script SQL...');
-        await db.query(sql);
-        console.log('¡Migración completada! Tablas creadas e insertado el admin por defecto.');
+        await initDb();
+        console.log('¡Migración completada! Tablas usuarios, servicios y mensajes_contacto listas.');
     } catch (err) {
         console.error('Error durante la migración:', err);
     } finally {

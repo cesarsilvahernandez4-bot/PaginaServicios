@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex">
+    <title>Solicitudes de Contacto | Panel Ambulancias de los Llanos</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet">
+    <link href="admin.css" rel="stylesheet">
+</head>
+<body class="admin-body">
+    <div class="admin-layout">
+        <aside class="sidebar" id="sidebar"></aside>
+
+        <main class="admin-main">
+            <div class="admin-topbar">
+                <div>
+                    <h1>Solicitudes de contacto</h1>
+                    <p>Mensajes enviados por los clientes desde el formulario del sitio público.</p>
+                </div>
+            </div>
+
+            <section class="stats" id="stats"></section>
+
+            <section class="panel">
+                <div class="panel-toolbar">
+                    <input class="search-input" id="buscar-mensaje" type="search" placeholder="Buscar por nombre, correo, teléfono o mensaje...">
+                    <div class="chip-group" id="filtro-estado">
+                        <button class="chip is-active" data-estado="" type="button">Todas</button>
+                        <button class="chip" data-estado="Nuevo" type="button">Nuevas</button>
+                        <button class="chip" data-estado="Atendido" type="button">Atendidas</button>
+                    </div>
+                </div>
+                <div class="table-wrap">
+                    <table class="data-table" id="tabla-mensajes">
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Cliente</th>
+                                <th>Servicio</th>
+                                <th>Mensaje</th>
+                                <th>Estado</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody><tr><td colspan="6" class="empty-state">Cargando solicitudes...</td></tr></tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="js/admin.js"></script>
+    <script>
+        const { api, toast, esc, ICONS } = Admin;
+        const $ = (id) => document.getElementById(id);
+        const fecha = new Intl.DateTimeFormat('es-CO', { dateStyle: 'medium', timeStyle: 'short' });
+        let mensajes = [];
+        let filtroEstado = '';
+
+        function renderStats() {
+            const nuevos = mensajes.filter((m) => m.estado === 'Nuevo').length;
+            const cards = [
+                ['Total solicitudes', mensajes.length, 'var(--azul)'],
+                ['Nuevas', nuevos, 'var(--rojo)'],
+                ['Atendidas', mensajes.length - nuevos, 'var(--verde)']
+            ];
+            $('stats').innerHTML = cards.map(([l, v, c]) =>
+                `<div class="stat-card" style="--accent:${c}"><div class="stat-label">${l}</div><div class="stat-value">${v}</div></div>`).join('');
+            Admin.setCount('mensajes', nuevos);
+        }
+
+        function renderTabla() {
+            const q = $('buscar-mensaje').value.trim().toLowerCase();
+            const lista = mensajes.filter((m) =>
+                (!filtroEstado || m.estado === filtroEstado) &&
+                (!q || `${m.nombre} ${m.correo} ${m.telefono} ${m.mensaje}`.toLowerCase().includes(q)));
+            const tbody = document.querySelector('#tabla-mensajes tbody');
+            if (!lista.length) {
+                tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No hay solicitudes para mostrar.</td></tr>';
+                return;
+            }
+            tbody.innerHTML = lista.map((m) => `
+                <tr>
+                    <td style="white-space:nowrap">${fecha.format(new Date(m.creado_en))}</td>
+                    <td>
+                        <div class="cell-title">${esc(m.nombre)}</div>
+                        <div class="cell-sub"><a href="tel:${esc(m.telefono)}">${esc(m.telefono)}</a> · <a href="mailto:${esc(m.correo)}">${esc(m.correo)}</a></div>
+                    </td>
+                    <td>${m.servicio ? `<span class="badge-pill badge-cat">${esc(m.servicio)}</span>` : '—'}</td>
+                    <td><div class="cell-sub" title="${esc(m.mensaje)}" style="white-space:normal;max-width:320px">${esc(m.mensaje) || '<em>Sin mensaje</em>'}</div></td>
+                    <td><span class="badge-pill ${m.estado === 'Nuevo' ? 'badge-new' : 'badge-ok'}">${esc(m.estado)}</span></td>
+                    <td><div class="row-actions">
+                        ${m.estado === 'Nuevo'
+                            ? `<button class="icon-btn success" title="Marcar como atendida" data-estado="Atendido" data-id="${m.id}" id="atender-mensaje-${m.id}">${ICONS.check}</button>`
+                            : `<button class="icon-btn" title="Marcar como nueva" data-estado="Nuevo" data-id="${m.id}" id="reabrir-mensaje-${m.id}">${ICONS.undo}</button>`}
+                        <button class="icon-btn danger" title="Eliminar" data-del="${m.id}" id="eliminar-mensaje-${m.id}">${ICONS.trash}</button>
+                    </div></td>
+                </tr>`).join('');
+        }
+
+        async function cargar() {
+            try {
+                mensajes = await api('/api/contacto');
+                renderStats();
+                renderTabla();
+            } catch (e) { toast(e.message, 'error'); }
+        }
+
+        document.querySelector('#tabla-mensajes tbody').addEventListener('click', async (e) => {
+            const est = e.target.closest('[data-estado]');
+            const del = e.target.closest('[data-del]');
+            try {
+                if (est) {
+                    await api(`/api/contacto/${est.dataset.id}`, { method: 'PATCH', body: { estado: est.dataset.estado } });
+                    toast(`Solicitud marcada como ${est.dataset.estado.toLowerCase()}`);
+                    cargar();
+                }
+                if (del && confirm('¿Eliminar esta solicitud?')) {
+                    await api(`/api/contacto/${del.dataset.del}`, { method: 'DELETE' });
+                    toast('Solicitud eliminada');
+                    cargar();
+                }
+            } catch (err) { toast(err.message, 'error'); }
+        });
+
+        $('filtro-estado').addEventListener('click', (e) => {
+            const chip = e.target.closest('.chip');
+            if (!chip) return;
+            document.querySelectorAll('#filtro-estado .chip').forEach((c) => c.classList.toggle('is-active', c === chip));
+            filtroEstado = chip.dataset.estado;
+            renderTabla();
+        });
+        $('buscar-mensaje').addEventListener('input', renderTabla);
+
+        Admin.init({ active: 'mensajes', roles: ['Administrador', 'Operador'] }).then(cargar).catch(() => {});
+    </script>
+</body>
+</html>

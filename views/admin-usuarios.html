@@ -3,199 +3,222 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Gestión de Usuarios | Administrador</title>
+    <meta name="robots" content="noindex">
+    <title>Gestión de Usuarios | Panel Ambulancias de los Llanos</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link href="styles.css" rel="stylesheet">
-    <style>
-        .admin-container { padding: 40px 20px; max-width: 1200px; margin: 0 auto; }
-        .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-        .table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
-        .table th, .table td { padding: 12px; border: 1px solid #ddd; text-align: left; }
-        .table th { background-color: #003049; color: #fff; }
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; }
-        .modal-content { background: #fff; padding: 30px; border-radius: 8px; width: 100%; max-width: 500px; }
-        .form-group { margin-bottom: 15px; }
-        .form-control { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
-        .action-btns button { padding: 5px 10px; margin-right: 5px; cursor: pointer; border: none; border-radius: 3px; color: #fff; }
-        .btn-edit { background-color: #2A9D8F; }
-        .btn-delete { background-color: #D62828; }
-        .admin-nav { margin-bottom: 20px; display: flex; gap: 10px; }
-    </style>
+    <link href="admin.css" rel="stylesheet">
 </head>
-<body>
-    <header class="site-header">
-        <div class="container header-inner">
-            <a class="logo" href="index.html">
-                <span class="logo-text">Ambulancias <strong>de los Llanos</strong></span>
-            </a>
-            <nav class="main-nav">
-                <ul class="nav-list">
-                    <li><a class="nav-link" href="#" id="logoutBtn">Cerrar Sesión</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
+<body class="admin-body">
+    <div class="admin-layout">
+        <aside class="sidebar" id="sidebar"></aside>
 
-    <main class="admin-container">
-        <div class="admin-nav">
-            <a href="admin-servicios.html" class="btn btn-outline">Gestión de Servicios</a>
-            <a href="admin-usuarios.html" class="btn btn-primary">Gestión de Usuarios</a>
-        </div>
+        <main class="admin-main">
+            <div class="admin-topbar">
+                <div>
+                    <h1>Gestión de Usuarios</h1>
+                    <p>Crea y administra las cuentas de Administradores y Operadores del sistema.</p>
+                </div>
+                <button class="btn btn-primary" id="btn-nuevo-usuario" type="button">+ Nuevo usuario</button>
+            </div>
 
-        <div class="admin-header">
-            <h2>Gestión de Usuarios</h2>
-            <button class="btn btn-primary" onclick="openModal()">Nuevo Usuario</button>
-        </div>
+            <section class="stats" id="stats"></section>
 
-        <table class="table" id="usersTable">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Correo</th>
-                    <th>Rol</th>
-                    <th>Estado</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Contenido dinámico -->
-            </tbody>
-        </table>
-    </main>
-
-    <!-- Modal Formulario -->
-    <div id="userModal" class="modal">
-        <div class="modal-content">
-            <h3 id="modalTitle">Nuevo Usuario</h3>
-            <form id="userForm">
-                <input type="hidden" id="userId">
-                <div class="form-group">
-                    <label>Nombre</label>
-                    <input type="text" id="nombre" class="form-control" required>
+            <section class="panel">
+                <div class="panel-toolbar">
+                    <input class="search-input" id="buscar-usuario" type="search" placeholder="Buscar por nombre o correo...">
+                    <div class="chip-group" id="filtro-rol">
+                        <button class="chip is-active" data-rol="" type="button">Todos</button>
+                        <button class="chip" data-rol="Administrador" type="button">Administradores</button>
+                        <button class="chip" data-rol="Operador" type="button">Operadores</button>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label>Correo</label>
-                    <input type="email" id="correo" class="form-control" required>
+                <div class="table-wrap">
+                    <table class="data-table" id="tabla-usuarios">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Usuario</th>
+                                <th>Rol</th>
+                                <th>Estado</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody><tr><td colspan="5" class="empty-state">Cargando usuarios...</td></tr></tbody>
+                    </table>
                 </div>
-                <div class="form-group">
-                    <label>Contraseña</label>
-                    <input type="password" id="password" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label>Rol</label>
-                    <select id="rol" class="form-control" required>
-                        <option value="Administrador">Administrador</option>
-                        <option value="Operador">Operador</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Estado</label>
-                    <select id="estado" class="form-control" required>
-                        <option value="Activo">Activo</option>
-                        <option value="Inactivo">Inactivo</option>
-                    </select>
-                </div>
-                <div style="text-align: right; margin-top: 20px;">
-                    <button type="button" class="btn btn-outline" onclick="closeModal()">Cancelar</button>
-                    <button type="submit" class="btn btn-primary">Guardar</button>
-                </div>
-            </form>
-        </div>
+            </section>
+        </main>
     </div>
 
+    <dialog class="modal-dialog" id="modal-usuario">
+        <form id="form-usuario" method="dialog">
+            <div class="modal-head">
+                <h2 id="modal-titulo">Nuevo usuario</h2>
+                <button class="icon-btn" type="button" id="btn-cerrar-modal" aria-label="Cerrar">✕</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="usuario-id">
+                <div class="field">
+                    <label for="usuario-nombre">Nombre completo</label>
+                    <input id="usuario-nombre" required maxlength="255">
+                </div>
+                <div class="field">
+                    <label for="usuario-correo">Correo electrónico</label>
+                    <input id="usuario-correo" type="email" required maxlength="255">
+                </div>
+                <div class="field">
+                    <label for="usuario-password">Contraseña</label>
+                    <input id="usuario-password" type="password" minlength="6" autocomplete="new-password">
+                    <p class="hint" id="hint-password">Mínimo 6 caracteres.</p>
+                </div>
+                <div class="row-2">
+                    <div class="field">
+                        <label for="usuario-rol">Rol</label>
+                        <select id="usuario-rol">
+                            <option value="Operador">Operador</option>
+                            <option value="Administrador">Administrador</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label for="usuario-estado">Estado</label>
+                        <select id="usuario-estado">
+                            <option value="Activo">Activo</option>
+                            <option value="Inactivo">Inactivo</option>
+                        </select>
+                    </div>
+                </div>
+                <p class="form-error" id="error-usuario"></p>
+            </div>
+            <div class="modal-foot">
+                <button class="btn btn-outline" type="button" id="btn-cancelar">Cancelar</button>
+                <button class="btn btn-primary" type="submit" id="btn-guardar-usuario">Guardar</button>
+            </div>
+        </form>
+    </dialog>
+
+    <script src="js/admin.js"></script>
     <script>
-        const API_URL = '/api/usuarios';
+        const { api, toast, esc, ICONS } = Admin;
+        const $ = (id) => document.getElementById(id);
+        const modal = $('modal-usuario');
+        let usuarios = [];
+        let filtroRol = '';
+        let yo = null;
 
-        // Validar sesión
-        const user = JSON.parse(localStorage.getItem('user'));
-        if (!user || user.rol !== 'Administrador') {
-            alert('Acceso denegado. Se requiere rol de Administrador.');
-            window.location.href = 'login.html';
+        function renderStats() {
+            const cards = [
+                ['Total usuarios', usuarios.length, 'var(--azul)'],
+                ['Administradores', usuarios.filter((u) => u.rol === 'Administrador').length, 'var(--rojo)'],
+                ['Operadores', usuarios.filter((u) => u.rol === 'Operador').length, 'var(--verde)'],
+                ['Inactivos', usuarios.filter((u) => u.estado !== 'Activo').length, 'var(--texto-suave)']
+            ];
+            $('stats').innerHTML = cards.map(([l, v, c]) =>
+                `<div class="stat-card" style="--accent:${c}"><div class="stat-label">${l}</div><div class="stat-value">${v}</div></div>`).join('');
         }
 
-        document.getElementById('logoutBtn').addEventListener('click', () => {
-            localStorage.removeItem('user');
-            window.location.href = 'login.html';
-        });
-
-        async function fetchUsers() {
-            const res = await fetch(API_URL);
-            const data = await res.json();
-            const tbody = document.querySelector('#usersTable tbody');
-            tbody.innerHTML = '';
-            data.forEach(u => {
-                tbody.innerHTML += `
-                    <tr>
-                        <td>${u.id}</td>
-                        <td>${u.nombre}</td>
-                        <td>${u.correo}</td>
-                        <td>${u.rol}</td>
-                        <td>${u.estado}</td>
-                        <td class="action-btns">
-                            <button class="btn-edit" onclick='editUser(${JSON.stringify(u)})'>Editar</button>
-                            <button class="btn-delete" onclick="deleteUser(${u.id})">Eliminar</button>
-                        </td>
-                    </tr>
-                `;
-            });
-        }
-
-        function openModal() {
-            document.getElementById('userForm').reset();
-            document.getElementById('userId').value = '';
-            document.getElementById('modalTitle').innerText = 'Nuevo Usuario';
-            document.getElementById('userModal').style.display = 'flex';
-        }
-
-        function closeModal() {
-            document.getElementById('userModal').style.display = 'none';
-        }
-
-        function editUser(user) {
-            document.getElementById('userId').value = user.id;
-            document.getElementById('nombre').value = user.nombre;
-            document.getElementById('correo').value = user.correo;
-            document.getElementById('password').value = user.password;
-            document.getElementById('rol').value = user.rol;
-            document.getElementById('estado').value = user.estado;
-            document.getElementById('modalTitle').innerText = 'Editar Usuario';
-            document.getElementById('userModal').style.display = 'flex';
-        }
-
-        document.getElementById('userForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const id = document.getElementById('userId').value;
-            const payload = {
-                nombre: document.getElementById('nombre').value,
-                correo: document.getElementById('correo').value,
-                password: document.getElementById('password').value,
-                rol: document.getElementById('rol').value,
-                estado: document.getElementById('estado').value
-            };
-
-            const method = id ? 'PUT' : 'POST';
-            const url = id ? `${API_URL}/${id}` : API_URL;
-
-            await fetch(url, {
-                method,
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-
-            closeModal();
-            fetchUsers();
-        });
-
-        async function deleteUser(id) {
-            if (confirm('¿Está seguro de eliminar este usuario?')) {
-                await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
-                fetchUsers();
+        function renderTabla() {
+            const q = $('buscar-usuario').value.trim().toLowerCase();
+            const lista = usuarios.filter((u) =>
+                (!filtroRol || u.rol === filtroRol) &&
+                (!q || `${u.nombre} ${u.correo}`.toLowerCase().includes(q)));
+            const tbody = document.querySelector('#tabla-usuarios tbody');
+            if (!lista.length) {
+                tbody.innerHTML = '<tr><td colspan="5" class="empty-state">No hay usuarios que coincidan.</td></tr>';
+                return;
             }
+            tbody.innerHTML = lista.map((u) => `
+                <tr>
+                    <td>#${u.id}</td>
+                    <td>
+                        <div class="cell-main">
+                            <div class="user-avatar" style="color:#fff;background:${u.rol === 'Administrador' ? 'var(--azul)' : 'var(--verde)'}">${esc(u.nombre.charAt(0).toUpperCase())}</div>
+                            <div><div class="cell-title">${esc(u.nombre)} ${yo && yo.id === u.id ? '<small>(tú)</small>' : ''}</div><div class="cell-sub">${esc(u.correo)}</div></div>
+                        </div>
+                    </td>
+                    <td><span class="badge-pill badge-cat">${esc(u.rol)}</span></td>
+                    <td><span class="badge-pill ${u.estado === 'Activo' ? 'badge-ok' : 'badge-off'}">${esc(u.estado)}</span></td>
+                    <td><div class="row-actions">
+                        <button class="icon-btn" title="Editar" data-edit="${u.id}" id="editar-usuario-${u.id}">${ICONS.edit}</button>
+                        ${yo && yo.id === u.id ? '' : `<button class="icon-btn danger" title="Eliminar" data-del="${u.id}" id="eliminar-usuario-${u.id}">${ICONS.trash}</button>`}
+                    </div></td>
+                </tr>`).join('');
         }
 
-        // Init
-        fetchUsers();
+        async function cargar() {
+            try {
+                usuarios = await api('/api/usuarios');
+                renderStats();
+                renderTabla();
+            } catch (e) { toast(e.message, 'error'); }
+        }
+
+        function abrirModal(u = null) {
+            $('form-usuario').reset();
+            $('error-usuario').textContent = '';
+            $('usuario-id').value = u ? u.id : '';
+            $('modal-titulo').textContent = u ? 'Editar usuario' : 'Nuevo usuario';
+            $('usuario-password').required = !u;
+            $('hint-password').textContent = u ? 'Déjala en blanco para conservar la contraseña actual.' : 'Mínimo 6 caracteres.';
+            if (u) {
+                $('usuario-nombre').value = u.nombre;
+                $('usuario-correo').value = u.correo;
+                $('usuario-rol').value = u.rol;
+                $('usuario-estado').value = u.estado;
+            }
+            modal.showModal();
+        }
+
+        $('form-usuario').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = $('usuario-id').value;
+            const body = {
+                nombre: $('usuario-nombre').value,
+                correo: $('usuario-correo').value,
+                password: $('usuario-password').value,
+                rol: $('usuario-rol').value,
+                estado: $('usuario-estado').value
+            };
+            try {
+                await api(id ? `/api/usuarios/${id}` : '/api/usuarios', { method: id ? 'PUT' : 'POST', body });
+                modal.close();
+                toast(id ? 'Usuario actualizado' : 'Usuario creado');
+                cargar();
+            } catch (err) { $('error-usuario').textContent = err.message; }
+        });
+
+        document.querySelector('#tabla-usuarios tbody').addEventListener('click', async (e) => {
+            const edit = e.target.closest('[data-edit]');
+            const del = e.target.closest('[data-del]');
+            if (edit) abrirModal(usuarios.find((u) => u.id == edit.dataset.edit));
+            if (del && confirm('¿Eliminar este usuario?')) {
+                try {
+                    await api(`/api/usuarios/${del.dataset.del}`, { method: 'DELETE' });
+                    toast('Usuario eliminado');
+                    cargar();
+                } catch (err) { toast(err.message, 'error'); }
+            }
+        });
+
+        $('filtro-rol').addEventListener('click', (e) => {
+            const chip = e.target.closest('.chip');
+            if (!chip) return;
+            document.querySelectorAll('#filtro-rol .chip').forEach((c) => c.classList.toggle('is-active', c === chip));
+            filtroRol = chip.dataset.rol;
+            renderTabla();
+        });
+
+        $('buscar-usuario').addEventListener('input', renderTabla);
+        $('btn-nuevo-usuario').addEventListener('click', () => abrirModal());
+        $('btn-cancelar').addEventListener('click', () => modal.close());
+        $('btn-cerrar-modal').addEventListener('click', () => modal.close());
+
+        // Solo el Administrador puede acceder a esta vista (RF08)
+        Admin.init({ active: 'usuarios', roles: ['Administrador'] })
+            .then((u) => { yo = u; return cargar(); })
+            .catch(() => {});
     </script>
 </body>
 </html>

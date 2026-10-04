@@ -118,7 +118,7 @@
                     </div>
 
                     <!-- Columna derecha: formulario de contacto (RF03) -->
-                    <form class="form-card" action="#" method="post" novalidate>
+                    <form class="form-card" id="form-contacto" action="/api/contacto" method="post" novalidate>
                         <h2 class="contact-heading">Solicita tu servicio</h2>
 
                         <div class="form-row">
@@ -140,10 +140,10 @@
                             <div class="form-group">
                                 <label for="servicio">Tipo de servicio</label>
                                 <select class="form-control" id="servicio" name="servicio">
-                                    <option value="tab">Traslado Asistencial Básico (TAB)</option>
-                                    <option value="tam">Traslado Asistencial Medicalizado (TAM)</option>
-                                    <option value="eventos">Cobertura de eventos</option>
-                                    <option value="domiciliario">Servicio domiciliario</option>
+                                    <option value="TAB">Traslado Asistencial Básico (TAB)</option>
+                                    <option value="TAM">Traslado Asistencial Medicalizado (TAM)</option>
+                                    <option value="Eventos">Cobertura de eventos</option>
+                                    <option value="Domiciliario">Servicio domiciliario</option>
                                 </select>
                             </div>
                         </div>
@@ -153,10 +153,12 @@
                             <textarea class="form-control" id="mensaje" name="mensaje" rows="5" placeholder="Cuéntanos tu necesidad, dirección y fecha del servicio..."></textarea>
                         </div>
 
-                        <button class="btn btn-primary" type="submit">Enviar mensaje</button>
+                        <button class="btn btn-primary" type="submit" id="btn-enviar-contacto">Enviar mensaje</button>
+
+                        <p class="form-status" id="estado-contacto" role="status" aria-live="polite"></p>
 
                         <p class="form-note">
-                            Al enviar aceptas que nuestro equipo te contacte. Este formulario se conectará a la API REST (RF09) en el Paso 7.
+                            Al enviar aceptas que nuestro equipo te contacte. Para emergencias llama directamente a nuestra línea 24/7.
                         </p>
                     </form>
 
@@ -223,5 +225,51 @@
         <a class="whatsapp-float" href="https://wa.me/573000000000" target="_blank" rel="noopener" aria-label="Contactar por WhatsApp">
             <img src="img/whatsapp.svg" alt="WhatsApp">
         </a>
+
+        <script>
+            // RF03: envío del formulario de contacto a la API REST
+            (function () {
+                const form = document.getElementById('form-contacto');
+                const estado = document.getElementById('estado-contacto');
+                const btn = document.getElementById('btn-enviar-contacto');
+
+                // Preseleccionar servicio si viene en la URL (?servicio=TAM)
+                const pre = new URLSearchParams(location.search).get('servicio');
+                if (pre && form.servicio.querySelector(`option[value="${CSS.escape(pre)}"]`)) form.servicio.value = pre;
+
+                const mostrar = (texto, tipo) => {
+                    estado.textContent = texto;
+                    estado.className = `form-status is-${tipo}`;
+                };
+
+                form.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const data = Object.fromEntries(new FormData(form));
+                    if (!data.nombre.trim() || !data.telefono.trim() || !data.correo.trim()) {
+                        return mostrar('Completa nombre, teléfono y correo.', 'error');
+                    }
+                    if (!form.correo.checkValidity()) return mostrar('Ingresa un correo válido.', 'error');
+
+                    btn.disabled = true;
+                    btn.textContent = 'Enviando...';
+                    try {
+                        const res = await fetch('/api/contacto', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(data)
+                        });
+                        const json = await res.json();
+                        if (!res.ok) throw new Error(json.error || 'No se pudo enviar el mensaje');
+                        form.reset();
+                        mostrar(json.message, 'ok');
+                    } catch (err) {
+                        mostrar(err.message === 'Failed to fetch' ? 'Error de conexión. Intenta de nuevo o escríbenos por WhatsApp.' : err.message, 'error');
+                    } finally {
+                        btn.disabled = false;
+                        btn.textContent = 'Enviar mensaje';
+                    }
+                });
+            })();
+        </script>
     </body>
 </html>

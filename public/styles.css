@@ -1148,3 +1148,77 @@ textarea.form-control {
         height: 300px;
     }
 }
+
+/* ------------------------------------------------------------
+   FILTRO POR CATEGORÍA (RF02) Y ESTADO DEL FORMULARIO (RF03)
+   ------------------------------------------------------------ */
+.service-filter {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 40px;
+}
+
+.filter-chip {
+    font-family: var(--font-titulos);
+    font-weight: 500;
+    font-size: .92rem;
+    padding: 10px 20px;
+    border-radius: 999px;
+    border: 2px solid rgba(0, 48, 73, .15);
+    background: var(--blanco);
+    color: var(--azul);
+    cursor: pointer;
+    transition: all var(--transicion);
+}
+
+.filter-chip:hover {
+    border-color: var(--azul);
+    transform: translateY(-2px);
+}
+
+.filter-chip.is-active {
+    background: var(--azul);
+    border-color: var(--azul);
+    color: var(--blanco);
+    box-shadow: 0 8px 20px rgba(0, 48, 73, .25);
+}
+
+.service-tag {
+    display: inline-block;
+    font-family: var(--font-titulos);
+    font-size: .75rem;
+    font-weight: 600;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--rojo);
+    background: rgba(214, 40, 40, .08);
+    padding: 4px 12px;
+    border-radius: 999px;
+    margin-bottom: 10px;
+}
+
+.service-card.is-entering {
+    animation: serviceIn .45s ease both;
+}
+
+@keyframes serviceIn {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: none; }
+}
+
+.form-status {
+    margin-top: 14px;
+    font-size: .95rem;
+    min-height: 1.2em;
+}
+
+.form-status.is-ok {
+    color: var(--verde);
+    font-weight: 500;
+}
+
+.form-status.is-error {
+    color: var(--rojo);
+}

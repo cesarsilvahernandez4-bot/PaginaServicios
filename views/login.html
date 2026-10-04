@@ -3,109 +3,140 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Acceso al panel administrativo de Ambulancias de los Llanos para Administradores y Operadores.">
+    <meta name="robots" content="noindex">
     <title>Iniciar Sesión | Ambulancias de los Llanos</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link href="styles.css" rel="stylesheet">
     <style>
-        .login-container {
+        .login-page {
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 1.1fr 1fr;
+        }
+        .login-visual {
+            position: relative;
+            background: linear-gradient(160deg, rgba(0, 48, 73, .92), rgba(0, 31, 47, .85)), url('img/TAM.png') center / cover;
+            color: #fff;
+            padding: 48px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+        }
+        .login-visual::after {
+            content: '';
+            position: absolute;
+            width: 420px; height: 420px;
+            right: -140px; bottom: -140px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(214, 40, 40, .55), transparent 70%);
+            animation: pulse 6s ease-in-out infinite;
+        }
+        @keyframes pulse { 50% { transform: scale(1.15); opacity: .7; } }
+        .login-visual a { font-family: var(--font-titulos); font-weight: 600; opacity: .9; }
+        .login-visual h2 { color: #fff; font-size: clamp(1.8rem, 3vw, 2.6rem); max-width: 440px; }
+        .login-visual p { color: var(--texto-claro); max-width: 420px; margin-top: 12px; }
+        .login-pane {
+            display: grid;
+            place-items: center;
+            padding: 40px 24px;
+            background: var(--gris-claro);
+        }
+        .login-card {
+            width: 100%;
             max-width: 400px;
-            margin: 100px auto;
-            padding: 40px;
-            background: #FFFFFF;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            background: #fff;
+            border-radius: 18px;
+            padding: 40px 36px;
+            box-shadow: var(--sombra-hover);
+            animation: rise .5s ease both;
         }
-        .login-title {
-            text-align: center;
-            color: #003049;
-            margin-bottom: 20px;
+        @keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+        .login-card h1 { font-size: 1.6rem; }
+        .login-card .sub { color: var(--texto-suave); margin: 6px 0 26px; }
+        .login-field { margin-bottom: 18px; }
+        .login-field label { display: block; font-size: .85rem; font-weight: 500; color: var(--texto-suave); margin-bottom: 6px; }
+        .login-field input {
+            width: 100%; padding: 12px 14px; font: inherit;
+            border: 1px solid #dde3ea; border-radius: 10px; background: #f8fafc;
+            transition: border-color var(--transicion), box-shadow var(--transicion);
         }
-        .form-group {
-            margin-bottom: 20px;
-        }
-        .form-control {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-family: 'Roboto', sans-serif;
-        }
-        .btn-block {
-            width: 100%;
-            display: block;
-            text-align: center;
-        }
-        .error-msg {
-            color: #D62828;
-            font-size: 0.9em;
-            margin-top: 10px;
-            text-align: center;
-            display: none;
+        .login-field input:focus { outline: none; border-color: var(--azul); box-shadow: 0 0 0 3px rgba(0, 48, 73, .12); background: #fff; }
+        .login-card .btn { width: 100%; }
+        .error-msg { color: var(--rojo); font-size: .9rem; margin-top: 14px; text-align: center; min-height: 1.2em; }
+        .back-link { display: block; text-align: center; margin-top: 18px; color: var(--texto-suave); font-size: .9rem; }
+        .back-link:hover { color: var(--azul); }
+        @media (max-width: 860px) {
+            .login-page { grid-template-columns: 1fr; }
+            .login-visual { min-height: 220px; padding: 28px; }
         }
     </style>
 </head>
 <body>
-    <header class="site-header">
-        <div class="container header-inner">
-            <a class="logo" href="index.html">
-                <span class="logo-text">Ambulancias <strong>de los Llanos</strong></span>
-            </a>
-            <nav class="main-nav">
-                <ul class="nav-list">
-                    <li><a class="nav-link" href="index.html">Volver al Inicio</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
-
-    <main>
-        <section class="section">
-            <div class="container">
-                <div class="login-container">
-                    <h2 class="login-title">Acceso Administrativo</h2>
-                    <form id="loginForm">
-                        <div class="form-group">
-                            <label for="correo">Correo Electrónico</label>
-                            <input type="email" id="correo" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="password">Contraseña</label>
-                            <input type="password" id="password" class="form-control" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary btn-block">Ingresar</button>
-                        <div id="errorMsg" class="error-msg">Credenciales inválidas</div>
-                    </form>
-                </div>
+    <div class="login-page">
+        <section class="login-visual" aria-hidden="true">
+            <a href="index.html">Ambulancias de los Llanos</a>
+            <div>
+                <h2>Gestiona servicios y solicitudes en un solo lugar.</h2>
+                <p>Panel exclusivo para Administradores y Operadores del sistema.</p>
             </div>
         </section>
-    </main>
+
+        <main class="login-pane">
+            <div class="login-card">
+                <h1>Iniciar sesión</h1>
+                <p class="sub">Ingresa con tu cuenta institucional.</p>
+                <form id="loginForm" novalidate>
+                    <div class="login-field">
+                        <label for="correo">Correo electrónico</label>
+                        <input type="email" id="correo" autocomplete="username" required>
+                    </div>
+                    <div class="login-field">
+                        <label for="password">Contraseña</label>
+                        <input type="password" id="password" autocomplete="current-password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="btn-ingresar">Ingresar</button>
+                    <p id="errorMsg" class="error-msg" role="alert"></p>
+                </form>
+                <a class="back-link" href="index.html">← Volver al sitio</a>
+            </div>
+        </main>
+    </div>
 
     <script>
+        // Si ya hay sesión, ir directo al panel
+        if (localStorage.getItem('token')) window.location.href = 'admin-servicios.html';
+
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const correo = document.getElementById('correo').value;
+            const errorMsg = document.getElementById('errorMsg');
+            const btn = document.getElementById('btn-ingresar');
+            const correo = document.getElementById('correo').value.trim();
             const password = document.getElementById('password').value;
-            
+            errorMsg.textContent = '';
+            if (!correo || !password) { errorMsg.textContent = 'Ingresa tu correo y contraseña.'; return; }
+
+            btn.disabled = true;
+            btn.textContent = 'Ingresando...';
             try {
                 const res = await fetch('/api/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ correo, password })
                 });
-                
                 const data = await res.json();
-                if (res.ok) {
-                    // Guardar usuario en localStorage
-                    localStorage.setItem('user', JSON.stringify(data.user));
-                    window.location.href = '/admin-servicios.html';
-                } else {
-                    const errorMsg = document.getElementById('errorMsg');
-                    errorMsg.style.display = 'block';
-                    errorMsg.textContent = data.error;
-                }
-            } catch (error) {
-                console.error(error);
-                alert('Error al conectar con el servidor');
+                if (!res.ok) throw new Error(data.error || 'No fue posible iniciar sesión');
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('user', JSON.stringify(data.user));
+                window.location.href = 'admin-servicios.html';
+            } catch (err) {
+                errorMsg.textContent = err.message === 'Failed to fetch' ? 'Error al conectar con el servidor' : err.message;
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Ingresar';
             }
         });
     </script>
