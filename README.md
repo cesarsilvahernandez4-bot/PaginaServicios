@@ -98,3 +98,4 @@ El proyecto está preparado para desplegarse fácilmente en **Render**:
 3. **Start Command**: `node index.js`
 4. En las configuraciones de Render (Environment Variables), asegúrate de agregar la variable `DB_CONNECTION_STRING` apuntando a tu instancia de Supabase.
 5. ¡Renderizará y migrará la base de datos automáticamente al arrancar la instancia!
+6. https://paginaservicios.onrender.com/index.html
