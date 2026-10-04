@@ -84,9 +84,6 @@ El servidor cuenta con un sistema **Idempotente** (`config/initDb.js`). Esto sig
 2. Insertará automáticamente un **Usuario Administrador por Defecto**.
 3. Insertará los servicios base (Ambulancias Básicas, Medicalizadas, Eventos, Domiciliarios).
 
-**Credenciales del Administrador por Defecto:**
-- **Email:** `admin@ambulancias.com`
-- **Contraseña:** `admin123`
 
 *(Nota: Por razones de seguridad, te recomendamos cambiar la contraseña y crear tus propios usuarios una vez ingreses al Panel de Administración).*
 
