@@ -1,0 +1,1150 @@
+/* ============================================================
+   AMBULANCIAS VITALES - Hoja de estilos principal
+   Identidad corporativa definida en la especificación (ERC §12)
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   1. VARIABLES / IDENTIDAD VISUAL (§12.1)
+   ------------------------------------------------------------ */
+:root {
+    /* Colores corporativos */
+    --rojo:        #D62828; /* Rojo Emergencia: botones principales y CTA */
+    --azul:        #003049; /* Azul Institucional: menús, encabezados, pie */
+    --blanco:      #FFFFFF; /* Fondos y áreas de lectura */
+    --gris-claro:  #F5F5F5; /* Fondos secundarios */
+    --verde:       #2A9D8F; /* Verde Atención: éxito y disponibilidad */
+
+    /* Derivados (para hovers y detalles) */
+    --azul-oscuro: #001f2f;
+    --rojo-oscuro: #b41f1f;
+
+    /* Texto */
+    --texto:        #1f2933;
+    --texto-suave:  #52606d;
+    --texto-claro:  #cbd2d9;
+
+    /* Tipografía (§12.2) */
+    --font-titulos: 'Poppins', system-ui, -apple-system, Segoe UI, sans-serif;
+    --font-texto:   'Roboto', system-ui, -apple-system, Segoe UI, sans-serif;
+
+    /* Otros */
+    --radio:       14px;
+    --radio-sm:    8px;
+    --sombra:      0 10px 30px rgba(0, 48, 73, .08);
+    --sombra-hover:0 16px 40px rgba(0, 48, 73, .16);
+    --transicion:  .25s ease;
+    --max-ancho:   1160px;
+}
+
+/* ------------------------------------------------------------
+   2. RESET Y BASE
+   ------------------------------------------------------------ */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: var(--font-texto);
+    font-size: 16px;
+    line-height: 1.65;
+    color: var(--texto);
+    background-color: var(--blanco);
+    -webkit-font-smoothing: antialiased;
+}
+
+img {
+    max-width: 100%;
+    display: block;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+ul {
+    list-style: none;
+}
+
+/* ------------------------------------------------------------
+   3. TIPOGRAFÍA (Poppins para títulos)
+   ------------------------------------------------------------ */
+h1, h2, h3, h4 {
+    font-family: var(--font-titulos);
+    line-height: 1.2;
+    color: var(--azul);
+    font-weight: 600;
+}
+
+/* ------------------------------------------------------------
+   4. CONTENEDOR
+   ------------------------------------------------------------ */
+.container {
+    width: 100%;
+    max-width: var(--max-ancho);
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* ------------------------------------------------------------
+   5. BOTONES
+   ------------------------------------------------------------ */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-family: var(--font-titulos);
+    font-weight: 600;
+    font-size: .95rem;
+    padding: 12px 26px;
+    border: 2px solid transparent;
+    border-radius: var(--radio-sm);
+    cursor: pointer;
+    transition: background-color var(--transicion), color var(--transicion),
+                transform var(--transicion), box-shadow var(--transicion);
+    white-space: nowrap;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+}
+
+.btn-primary {
+    background-color: var(--rojo);
+    color: var(--blanco);
+    box-shadow: 0 8px 20px rgba(214, 40, 40, .3);
+}
+
+.btn-primary:hover {
+    background-color: var(--rojo-oscuro);
+}
+
+.btn-whatsapp {
+    background-color: var(--verde);
+    color: var(--blanco);
+    box-shadow: 0 8px 20px rgba(42, 157, 143, .3);
+}
+
+.btn-whatsapp:hover {
+    background-color: #21867a;
+}
+
+.btn-outline {
+    background-color: transparent;
+    color: var(--blanco);
+    border-color: var(--blanco);
+}
+
+.btn-outline:hover {
+    background-color: var(--blanco);
+    color: var(--azul);
+}
+
+/* ------------------------------------------------------------
+   6. HEADER / NAVEGACIÓN
+   ------------------------------------------------------------ */
+.site-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background-color: var(--azul);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, .18);
+}
+
+.header-inner {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    min-height: 72px;
+}
+
+/* Logo */
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-titulos);
+    font-size: 1.15rem;
+    color: var(--blanco);
+    font-weight: 500;
+    margin-right: auto;
+}
+
+.logo-img {
+    width: 40px;
+    height: 40px;
+}
+
+.logo-text strong {
+    color: var(--rojo);
+    font-weight: 700;
+}
+
+/* Navegación */
+.nav-list {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.nav-link {
+    display: block;
+    padding: 8px 14px;
+    font-family: var(--font-titulos);
+    font-weight: 500;
+    font-size: .95rem;
+    color: var(--blanco);
+    border-radius: var(--radio-sm);
+    transition: background-color var(--transicion), color var(--transicion);
+}
+
+.nav-link:hover,
+.nav-link:focus-visible {
+    background-color: rgba(255, 255, 255, .12);
+}
+
+.nav-link.is-active {
+    background-color: var(--rojo);
+    color: var(--blanco);
+}
+
+/* Botón de login en el header */
+.btn-login {
+    padding: 10px 20px;
+    font-size: .9rem;
+}
+
+/* Menú móvil (sin JavaScript): label hamburguesa + checkbox */
+.nav-toggle-label {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 28px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.nav-toggle-label span {
+    display: block;
+    height: 3px;
+    width: 100%;
+    background-color: var(--blanco);
+    border-radius: 2px;
+    transition: transform var(--transicion), opacity var(--transicion);
+}
+
+/* Estado abierto: convierte las 3 barras en una X */
+.nav-toggle:checked ~ .nav-toggle-label span:nth-child(1) {
+    transform: translateY(8.5px) rotate(45deg);
+}
+.nav-toggle:checked ~ .nav-toggle-label span:nth-child(2) {
+    opacity: 0;
+}
+.nav-toggle:checked ~ .nav-toggle-label span:nth-child(3) {
+    transform: translateY(-8.5px) rotate(-45deg);
+}
+
+/* ------------------------------------------------------------
+   7. HERO PRINCIPAL
+   ------------------------------------------------------------ */
+.hero {
+    background: linear-gradient(135deg, var(--azul) 0%, var(--azul-oscuro) 100%);
+    color: var(--blanco);
+    overflow: hidden;
+}
+
+.hero-inner {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    align-items: center;
+    gap: 48px;
+    padding: 72px 20px;
+}
+
+.hero-content {
+    min-width: 0;
+}
+
+.badge {
+    display: inline-block;
+    background-color: rgba(42, 157, 143, .18);
+    color: #7ee0d3;
+    border: 1px solid rgba(42, 157, 143, .5);
+    font-family: var(--font-titulos);
+    font-size: .8rem;
+    font-weight: 500;
+    letter-spacing: .4px;
+    padding: 6px 14px;
+    border-radius: 50px;
+    margin-bottom: 18px;
+}
+
+.hero-title {
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 700;
+    color: var(--blanco);
+    margin-bottom: 18px;
+}
+
+.hero-text {
+    font-size: 1.1rem;
+    color: var(--texto-claro);
+    max-width: 520px;
+    margin-bottom: 30px;
+}
+
+.hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+}
+
+.hero-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: var(--radio);
+    box-shadow: 0 24px 50px rgba(0, 0, 0, .35);
+}
+
+/* ------------------------------------------------------------
+   8. SECCIONES GENÉRICAS
+   ------------------------------------------------------------ */
+.section {
+    padding: 80px 0;
+}
+
+.section-alt {
+    background-color: var(--gris-claro);
+}
+
+.section-head {
+    text-align: center;
+    max-width: 640px;
+    margin: 0 auto 48px;
+}
+
+.section-title {
+    font-size: clamp(1.6rem, 3vw, 2.2rem);
+    margin-bottom: 12px;
+}
+
+.section-title::after {
+    content: "";
+    display: block;
+    width: 64px;
+    height: 4px;
+    background-color: var(--rojo);
+    border-radius: 4px;
+    margin: 14px auto 0;
+}
+
+.section-subtitle {
+    color: var(--texto-suave);
+    font-size: 1.05rem;
+}
+
+/* ------------------------------------------------------------
+   9. TARJETAS DE SERVICIOS (§12.3)
+   ------------------------------------------------------------ */
+.cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 26px;
+}
+
+.card {
+    background-color: var(--blanco);
+    border: 1px solid #e8ebee;
+    border-radius: var(--radio);
+    overflow: hidden;
+    box-shadow: var(--sombra);
+    display: flex;
+    flex-direction: column;
+    transition: transform var(--transicion), box-shadow var(--transicion);
+}
+
+.card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--sombra-hover);
+}
+
+.card-img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
+
+.card-body {
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.card-title {
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+}
+
+.card-text {
+    color: var(--texto-suave);
+    font-size: .95rem;
+    flex: 1;
+    margin-bottom: 18px;
+}
+
+.card-link {
+    font-family: var(--font-titulos);
+    font-weight: 600;
+    font-size: .9rem;
+    color: var(--rojo);
+    align-self: flex-start;
+    transition: color var(--transicion);
+}
+
+.card-link::after {
+    content: " \2192";
+}
+
+.card-link:hover {
+    color: var(--rojo-oscuro);
+}
+
+/* ------------------------------------------------------------
+   10. INFORMACIÓN INSTITUCIONAL
+   ------------------------------------------------------------ */
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 26px;
+}
+
+.info-block {
+    background-color: var(--blanco);
+    border-radius: var(--radio);
+    padding: 28px 24px;
+    border-left: 4px solid var(--verde);
+    box-shadow: var(--sombra);
+}
+
+.info-title {
+    font-size: 1.15rem;
+    margin-bottom: 10px;
+    color: var(--azul);
+}
+
+.info-text {
+    color: var(--texto-suave);
+    font-size: .95rem;
+}
+
+/* ------------------------------------------------------------
+   11. LLAMADO A LA ACCIÓN (CTA)
+   ------------------------------------------------------------ */
+.cta {
+    background: linear-gradient(135deg, var(--rojo) 0%, var(--rojo-oscuro) 100%);
+    color: var(--blanco);
+}
+
+.cta-inner {
+    text-align: center;
+}
+
+.cta-title {
+    color: var(--blanco);
+    font-size: clamp(1.6rem, 3vw, 2.2rem);
+    margin-bottom: 12px;
+}
+
+.cta-text {
+    color: rgba(255, 255, 255, .92);
+    font-size: 1.1rem;
+    margin-bottom: 30px;
+}
+
+.cta-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px;
+}
+
+/* ------------------------------------------------------------
+   12. FOOTER
+   ------------------------------------------------------------ */
+.site-footer {
+    background-color: var(--azul);
+    color: var(--texto-claro);
+}
+
+.footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 40px;
+    padding: 60px 20px 40px;
+}
+
+.footer-col {
+    min-width: 0;
+}
+
+.footer-title {
+    color: var(--blanco);
+    font-size: 1.05rem;
+    margin-bottom: 16px;
+}
+
+.footer-text {
+    color: var(--texto-claro);
+    font-size: .95rem;
+    max-width: 340px;
+}
+
+.footer-list li {
+    margin-bottom: 10px;
+}
+
+.footer-list a {
+    color: var(--texto-claro);
+    font-size: .95rem;
+    transition: color var(--transicion);
+}
+
+.footer-list a:hover {
+    color: var(--verde);
+}
+
+.footer-bottom {
+    border-top: 1px solid rgba(255, 255, 255, .12);
+    padding: 20px;
+    text-align: center;
+    font-size: .88rem;
+    color: var(--texto-claro);
+}
+
+/* ------------------------------------------------------------
+   13. BOTÓN FLOTANTE DE WHATSAPP
+   ------------------------------------------------------------ */
+.whatsapp-float {
+    position: fixed;
+    right: 22px;
+    bottom: 22px;
+    z-index: 200;
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    background-color: var(--verde);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 24px rgba(42, 157, 143, .45);
+    transition: transform var(--transicion), box-shadow var(--transicion);
+}
+
+.whatsapp-float:hover {
+    transform: scale(1.08);
+    box-shadow: 0 14px 30px rgba(42, 157, 143, .6);
+}
+
+.whatsapp-float img {
+    width: 32px;
+    height: 32px;
+}
+
+/* ------------------------------------------------------------
+   14. ACCESIBILIDAD
+   ------------------------------------------------------------ */
+:focus-visible {
+    outline: 3px solid var(--verde);
+    outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    * {
+        transition: none !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* ------------------------------------------------------------
+   15. DISEÑO RESPONSIVE (§12.4)
+   Adaptación a computadores, portátiles, tabletas y móviles
+   ------------------------------------------------------------ */
+
+/* --- Portátiles y tabletas (hasta 992px) --- */
+@media (max-width: 992px) {
+    .hero-inner {
+        grid-template-columns: 1fr;
+        gap: 36px;
+        padding: 56px 20px;
+        text-align: center;
+    }
+
+    .hero-image {
+        order: -1;
+    }
+
+    .hero-text {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .hero-actions {
+        justify-content: center;
+    }
+
+    .cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .info-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* --- Tabletas y móviles: activa el menú hamburguesa (hasta 860px) --- */
+@media (max-width: 860px) {
+    .nav-toggle-label {
+        display: flex;
+    }
+
+    .main-nav {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background-color: var(--azul);
+        box-shadow: 0 14px 26px rgba(0, 0, 0, .28);
+        display: none;
+    }
+
+    /* Abre el menú cuando el checkbox está marcado */
+    .nav-toggle:checked ~ .main-nav {
+        display: block;
+    }
+
+    .nav-list {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 4px;
+        padding: 12px 16px 18px;
+    }
+
+    .nav-link {
+        padding: 14px 14px;
+    }
+
+    .btn-login {
+        padding: 9px 16px;
+        font-size: .85rem;
+    }
+
+    .logo {
+        font-size: 1rem;
+    }
+}
+
+/* --- Dispositivos móviles (hasta 600px) --- */
+@media (max-width: 600px) {
+    .section {
+        padding: 56px 0;
+    }
+
+    .hero-title {
+        font-size: 1.9rem;
+    }
+
+    .cards,
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .footer-grid {
+        grid-template-columns: 1fr;
+        gap: 30px;
+        padding: 48px 20px 30px;
+    }
+
+    .footer-text {
+        max-width: none;
+    }
+
+    .hero-actions .btn,
+    .cta-actions .btn {
+        width: 100%;
+    }
+
+    .whatsapp-float {
+        width: 52px;
+        height: 52px;
+        right: 16px;
+        bottom: 16px;
+    }
+}
+
+/* --- Pantallas muy pequeñas (hasta 400px) --- */
+@media (max-width: 400px) {
+    .logo-text {
+        display: none;
+    }
+
+    .btn-login {
+        padding: 8px 12px;
+    }
+}
+
+/* ------------------------------------------------------------
+   16. PÁGINAS INTERNAS: ENCABEZADO DE PÁGINA
+   ------------------------------------------------------------ */
+.page-hero {
+    background: linear-gradient(135deg, var(--azul) 0%, var(--azul-oscuro) 100%);
+    color: var(--blanco);
+    text-align: center;
+    padding: 64px 0;
+}
+
+.page-hero h1 {
+    color: var(--blanco);
+    font-size: clamp(1.9rem, 4vw, 2.6rem);
+    margin-bottom: 12px;
+}
+
+.page-hero p {
+    color: var(--texto-claro);
+    max-width: 640px;
+    margin: 0 auto;
+}
+
+/* Migas de pan (breadcrumb) */
+.breadcrumb {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    font-size: .88rem;
+    color: var(--texto-claro);
+    margin-bottom: 14px;
+}
+
+.breadcrumb a:hover {
+    color: var(--verde);
+}
+
+.breadcrumb span {
+    color: rgba(255, 255, 255, .5);
+}
+
+/* ------------------------------------------------------------
+   17. PÁGINA DE SERVICIOS (§7 / §12.3)
+   ------------------------------------------------------------ */
+.service-grid {
+    display: grid;
+    gap: 36px;
+}
+
+.service-card {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    background-color: var(--blanco);
+    border: 1px solid #e8ebee;
+    border-radius: var(--radio);
+    overflow: hidden;
+    box-shadow: var(--sombra);
+    scroll-margin-top: 90px; /* evita que el header fijo tape el ancla */
+}
+
+.service-media {
+    min-height: 100%;
+}
+
+.service-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.service-content {
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.service-content h2 {
+    font-size: 1.5rem;
+    margin-bottom: 12px;
+}
+
+.service-content > p {
+    color: var(--texto-suave);
+    margin-bottom: 18px;
+}
+
+.service-features {
+    margin-bottom: 20px;
+}
+
+.service-features li {
+    position: relative;
+    padding-left: 26px;
+    color: var(--texto-suave);
+    font-size: .95rem;
+    margin-bottom: 8px;
+}
+
+.service-features li::before {
+    content: "\2713";
+    position: absolute;
+    left: 0;
+    color: var(--verde);
+    font-weight: 700;
+}
+
+.service-price {
+    font-family: var(--font-titulos);
+    font-weight: 600;
+    color: var(--azul);
+    margin-bottom: 22px;
+}
+
+.service-price strong {
+    color: var(--rojo);
+}
+
+.service-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+/* Filas alternadas: en las fichas pares la imagen pasa al otro lado */
+.service-card:nth-child(even) .service-media {
+    order: 2;
+}
+
+/* Responsive de la página de servicios */
+@media (max-width: 860px) {
+    .service-card {
+        grid-template-columns: 1fr;
+    }
+
+    .service-card:nth-child(even) .service-media {
+        order: 0;
+    }
+
+    .service-media img {
+        height: 240px;
+    }
+
+    .service-content {
+        padding: 28px;
+    }
+}
+
+/* ------------------------------------------------------------
+   18. PÁGINA NOSOTROS (§12.3)
+   ------------------------------------------------------------ */
+
+/* 18.1 Historia / quiénes somos: texto + imagen */
+.about-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    align-items: center;
+    gap: 48px;
+}
+
+.about-content {
+    min-width: 0;
+}
+
+/* Título de sección alineado a la izquierda */
+.section-title.section-title--left {
+    text-align: left;
+}
+
+.section-title.section-title--left::after {
+    margin-left: 0;
+}
+
+.about-text {
+    color: var(--texto-suave);
+    margin-bottom: 16px;
+}
+
+.about-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: var(--radio);
+    box-shadow: var(--sombra);
+}
+
+/* 18.2 Misión / Visión / Valores (reutiliza .info-grid + .info-block) */
+.info-grid--3 {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.info-block--verde { border-left-color: var(--verde); }
+.info-block--azul  { border-left-color: var(--azul); }
+.info-block--rojo  { border-left-color: var(--rojo); }
+
+.values-list {
+    margin-top: 12px;
+}
+
+.values-list li {
+    position: relative;
+    padding-left: 24px;
+    color: var(--texto-suave);
+    font-size: .95rem;
+    margin-bottom: 8px;
+}
+
+.values-list li::before {
+    content: "\2713";
+    position: absolute;
+    left: 0;
+    color: var(--verde);
+    font-weight: 700;
+}
+
+/* 18.3 Equipo de trabajo */
+.team-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 26px;
+}
+
+.team-card {
+    background-color: var(--blanco);
+    border: 1px solid #e8ebee;
+    border-radius: var(--radio);
+    overflow: hidden;
+    box-shadow: var(--sombra);
+    text-align: center;
+    transition: transform var(--transicion), box-shadow var(--transicion);
+}
+
+.team-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--sombra-hover);
+}
+
+.team-photo {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+}
+
+.team-body {
+    padding: 20px;
+}
+
+.team-name {
+    font-size: 1.05rem;
+    margin-bottom: 4px;
+}
+
+.team-role {
+    font-family: var(--font-titulos);
+    font-weight: 500;
+    font-size: .9rem;
+    color: var(--verde);
+}
+
+/* --- Responsive de la página Nosotros --- */
+@media (max-width: 992px) {
+    .about-grid {
+        grid-template-columns: 1fr;
+        gap: 36px;
+    }
+
+    .about-media {
+        order: -1;
+    }
+
+    .info-grid--3 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .team-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .info-grid--3,
+    .team-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ------------------------------------------------------------
+   19. PÁGINA CONTACTO (§3 / §12.3)
+   ------------------------------------------------------------ */
+
+/* 19.1 Rejilla principal: datos de contacto + formulario */
+.contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.15fr;
+    gap: 48px;
+    align-items: start;
+}
+
+.contact-heading {
+    font-size: clamp(1.4rem, 3vw, 1.8rem);
+    margin-bottom: 22px;
+}
+
+.contact-info {
+    min-width: 0;
+}
+
+/* 19.2 Lista de datos de contacto */
+.contact-list {
+    display: grid;
+    gap: 22px;
+}
+
+.contact-item {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+}
+
+.contact-icon {
+    flex-shrink: 0;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background-color: rgba(42, 157, 143, .12);
+    color: var(--verde);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.contact-icon svg {
+    width: 22px;
+    height: 22px;
+}
+
+.contact-item-title {
+    font-size: 1rem;
+    margin-bottom: 2px;
+}
+
+.contact-item-text {
+    color: var(--texto-suave);
+    font-size: .95rem;
+}
+
+.contact-item-text a {
+    transition: color var(--transicion);
+}
+
+.contact-item-text a:hover {
+    color: var(--verde);
+}
+
+/* 19.3 Formulario de contacto (RF03) */
+.form-card {
+    background-color: var(--blanco);
+    border: 1px solid #e8ebee;
+    border-radius: var(--radio);
+    box-shadow: var(--sombra);
+    padding: 36px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+}
+
+.form-group {
+    margin-bottom: 18px;
+}
+
+.form-group label {
+    display: block;
+    font-family: var(--font-titulos);
+    font-weight: 500;
+    font-size: .92rem;
+    color: var(--azul);
+    margin-bottom: 6px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px 14px;
+    font-family: var(--font-texto);
+    font-size: 1rem;
+    color: var(--texto);
+    background-color: var(--blanco);
+    border: 1px solid #cfd6dc;
+    border-radius: var(--radio-sm);
+    transition: border-color var(--transicion), box-shadow var(--transicion);
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--verde);
+    box-shadow: 0 0 0 3px rgba(42, 157, 143, .18);
+}
+
+textarea.form-control {
+    resize: vertical;
+    min-height: 130px;
+}
+
+.form-note {
+    font-size: .85rem;
+    color: var(--texto-suave);
+    margin-top: 14px;
+}
+
+/* 19.4 Mapa de ubicación */
+.contact-map {
+    border-radius: var(--radio);
+    overflow: hidden;
+    box-shadow: var(--sombra);
+}
+
+.contact-map iframe {
+    display: block;
+    width: 100%;
+    height: 380px;
+    border: 0;
+}
+
+/* --- Responsive de la página Contacto --- */
+@media (max-width: 992px) {
+    .contact-grid {
+        grid-template-columns: 1fr;
+        gap: 36px;
+    }
+}
+
+@media (max-width: 600px) {
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .form-card {
+        padding: 24px;
+    }
+
+    .contact-map iframe {
+        height: 300px;
+    }
+}

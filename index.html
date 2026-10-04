@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="Servicio de ambulancias 24/7. Traslados asistenciales básicos (TAB), medicalizados (TAM), cobertura de eventos y servicio domiciliario.">
+        <title>Inicio | Ambulancias de los Llanos - Atención Prehospitalaria 24/7</title>
+
+        <!-- Tipografías: Poppins (títulos y navegación) y Roboto (contenido) -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+        <img class="logo-img" src="img/Portada.jpg">
+
+        <!-- Hoja de estilos -->
+        <link href="styles.css" rel="stylesheet">
+    </head>
+
+    <body>
+        <!-- HEADER / NAVEGACIÓN-->
+        <header class="site-header">
+            <div class="container header-inner">
+                <a class="logo" href="index.html">
+                    <img class="logo-img" src="img/Portada.jpg" alt="Logotipo Ambulancias de los Llanos">
+                    <span class="logo-text">Ambulancias <strong>de los Llanos</strong></span>
+                </a>
+
+                <!-- Menú móvil sin JavaScript (checkbox + label) -->
+                <input type="checkbox" id="nav-toggle" class="nav-toggle" hidden>
+                <label for="nav-toggle" class="nav-toggle-label" aria-label="Abrir menú de navegación">
+                    <span></span><span></span><span></span>
+                </label>
+
+                <nav class="main-nav" aria-label="Navegación principal">
+                    <ul class="nav-list">
+                        <li><a class="nav-link is-active" href="index.html" aria-current="page">Inicio</a></li>
+                        <li><a class="nav-link" href="servicios.html">Servicios</a></li>
+                        <li><a class="nav-link" href="nosotros.html">Nosotros</a></li>
+                        <li><a class="nav-link" href="contacto.html">Contacto</a></li>
+                    </ul>
+                </nav>
+
+                <a class="btn btn-primary btn-login" href="login.html">Iniciar sesión</a>
+            </div>
+        </header>
+
+        <main>
+        <!-- HERO PRINCIPAL-->
+            <section class="hero">
+                <div class="container hero-inner">
+                    <div class="hero-content">
+                        <span class="badge">Atención prehospitalaria 24/7</span>
+                        <h1 class="hero-title">Tu emergencia, nuestra prioridad</h1>
+                        <p class="hero-text">
+                            Traslados asistenciales básicos y medicalizados, cobertura de eventos y
+                            servicio domiciliario con personal profesional y ambulancias equipadas.
+                        </p>
+                        <div class="hero-actions">
+                            <a class="btn btn-primary" href="contacto.html">Solicitar servicio</a>
+                            <a class="btn btn-whatsapp" href="https://wa.me/573000000000" target="_blank" rel="noopener">
+                                Escribir por WhatsApp
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="hero-image">
+                        <img src="img/Logo.png" alt="Ambulancias listas para el servicio del llano">
+                    </div>
+                </div>
+            </section>
+        <!-- SERVICIOS DESTACADOS (RF02)-->
+            <section class="section" id="servicios">
+                <div class="container">
+                    <header class="section-head">
+                        <h2 class="section-title">Nuestros servicios</h2>
+                        <p class="section-subtitle">Soluciones integrales de transporte y atención médica.</p>
+                    </header>
+        <!--Tarjetas-->
+                    <div class="cards">
+                        <article class="card">
+                            <img class="card-img" src="img/TAB.png" alt="Traslado Asistencial Básico">
+                            <div class="card-body">
+                                <h3 class="card-title">Traslado Asistencial Básico (TAB)</h3>
+                                <p class="card-text">Traslados programados con camilla, oxígeno y personal básico capacitado.</p>
+                                <a class="card-link" href="servicios.html#tab">Más información</a>
+                            </div>
+                        </article>
+
+                        <article class="card">
+                            <img class="card-img" src="img/TAM.png" alt="Traslado Asistencial Medicalizado">
+                            <div class="card-body">
+                                <h3 class="card-title">Traslado Asistencial Medicalizado (TAM)</h3>
+                                <p class="card-text">Unidad medicalizada con médico y equipos de soporte vital avanzado.</p>
+                                <a class="card-link" href="servicios.html#tam">Más información</a>
+                            </div>
+                        </article>
+
+                        <article class="card">
+                            <img class="card-img" src="img/evento.jpg" alt="Cobertura de eventos">
+                            <div class="card-body">
+                                <h3 class="card-title">Cobertura de Eventos</h3>
+                                <p class="card-text">Acompañamiento prehospitalario para eventos deportivos, culturales y empresariales.</p>
+                                <a class="card-link" href="servicios.html#eventos">Más información</a>
+                            </div>
+                        </article>
+
+                        <article class="card">
+                            <img class="card-img" src="img/Recojer.jpg" alt="Servicio domiciliario">
+                            <div class="card-body">
+                                <h3 class="card-title">Servicio Domiciliario</h3>
+                                <p class="card-text">Atención y traslado desde tu hogar hacia centros médicos, de forma segura.</p>
+                                <a class="card-link" href="servicios.html#domiciliario">Más información</a>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            </section>
+        <!-- INFORMACIÓN INSTITUCIONAL-->
+            <section class="section section-alt" id="institucional">
+                <div class="container">
+                    <header class="section-head">
+                        <h2 class="section-title">Quiénes somos</h2>
+                        <p class="section-subtitle">Comprometidos con la vida y la atención oportuna.</p>
+                    </header>
+
+                    <div class="info-grid">
+                        <article class="info-block">
+                            <h3 class="info-title">Misión</h3>
+                            <p class="info-text">Brindar servicios de transporte y atención prehospitalaria con calidad, oportunidad y calidez humana.</p>
+                        </article>
+
+                        <article class="info-block">
+                            <h3 class="info-title">Visión</h3>
+                            <p class="info-text">Ser la empresa de ambulancias líder en la región, reconocida por su confiabilidad y excelencia.</p>
+                        </article>
+
+                        <article class="info-block">
+                            <h3 class="info-title">Cobertura</h3>
+                            <p class="info-text">Operamos en la ciudad y municipios aledaños, con disponibilidad las 24 horas del día.</p>
+                        </article>
+
+                        <article class="info-block">
+                            <h3 class="info-title">Valores</h3>
+                            <p class="info-text">Responsabilidad, humanidad, rapidez y trabajo en equipo con el paciente como centro.</p>
+                        </article>
+                    </div>
+                </div>
+            </section>
+        <!--  LLAMADO A LA ACCIÓN -->
+            <section class="section cta">
+                <div class="container cta-inner">
+                    <h2 class="cta-title">¿Necesitas una ambulancia?</h2>
+                    <p class="cta-text">Comunícate ahora mismo y nuestro equipo te atenderá de inmediato.</p>
+                    <div class="cta-actions">
+                        <a class="btn btn-primary" href="contacto.html">Solicitar servicio</a>
+                        <a class="btn btn-outline" href="tel:+573000000000">Llamar: +57 300 000 0000</a>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- FOOTER -->
+        <footer class="site-footer">
+            <div class="container footer-grid">
+                <div class="footer-col">
+                    <h3 class="footer-title">Ambulancias Vitales</h3>
+                    <p class="footer-text">Atención prehospitalaria y traslados asistenciales 24/7 con personal calificado.</p>
+                </div>
+
+                <div class="footer-col">
+                    <h3 class="footer-title">Navegación</h3>
+                    <ul class="footer-list">
+                        <li><a href="index.html">Inicio</a></li>
+                        <li><a href="servicios.html">Servicios</a></li>
+                        <li><a href="nosotros.html">Nosotros</a></li>
+                        <li><a href="contacto.html">Contacto</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h3 class="footer-title">Contacto</h3>
+                    <ul class="footer-list">
+                        <li><a href="tel:+573000000000">+57 300 000 0000</a></li>
+                        <li><a href="https://wa.me/573000000000" target="_blank" rel="noopener">WhatsApp</a></li>
+                        <li><a href="mailto:contacto@ambulanciasvitales.com">contacto@ambulanciasvitales.com</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2026 Ambulancias Vitales. Todos los derechos reservados.</p>
+            </div>
+        </footer>
+        <!-- BOTÓN FLOTANTE DE WHATSAPP -->
+        <a class="whatsapp-float" href="https://wa.me/573000000000" target="_blank" rel="noopener" aria-label="Contactar por WhatsApp">
+            <img src="img/whatsapp.svg" alt="WhatsApp">
+        </a>
+    </body>
+</html>
