@@ -1,0 +1,4 @@
+# Este archivo fue solicitado, pero ten en cuenta que para proyectos en Node.js (como este, que usa Express), 
+# Render detectará automáticamente el archivo 'package.json' e instalará las dependencias usando 'npm install'.
+# Render usa 'requirements.txt' únicamente para proyectos basados en Python (como Flask o Django).
+# Las dependencias de este proyecto están definidas en package.json: express, cors, dotenv, @supabase/supabase-js.

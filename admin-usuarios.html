@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Gestión de Usuarios | Administrador</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet">
+    <style>
+        .admin-container { padding: 40px 20px; max-width: 1200px; margin: 0 auto; }
+        .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
+        .table th, .table td { padding: 12px; border: 1px solid #ddd; text-align: left; }
+        .table th { background-color: #003049; color: #fff; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; }
+        .modal-content { background: #fff; padding: 30px; border-radius: 8px; width: 100%; max-width: 500px; }
+        .form-group { margin-bottom: 15px; }
+        .form-control { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+        .action-btns button { padding: 5px 10px; margin-right: 5px; cursor: pointer; border: none; border-radius: 3px; color: #fff; }
+        .btn-edit { background-color: #2A9D8F; }
+        .btn-delete { background-color: #D62828; }
+        .admin-nav { margin-bottom: 20px; display: flex; gap: 10px; }
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a class="logo" href="index.html">
+                <span class="logo-text">Ambulancias <strong>de los Llanos</strong></span>
+            </a>
+            <nav class="main-nav">
+                <ul class="nav-list">
+                    <li><a class="nav-link" href="#" id="logoutBtn">Cerrar Sesión</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="admin-container">
+        <div class="admin-nav">
+            <a href="admin-servicios.html" class="btn btn-outline">Gestión de Servicios</a>
+            <a href="admin-usuarios.html" class="btn btn-primary">Gestión de Usuarios</a>
+        </div>
+
+        <div class="admin-header">
+            <h2>Gestión de Usuarios</h2>
+            <button class="btn btn-primary" onclick="openModal()">Nuevo Usuario</button>
+        </div>
+
+        <table class="table" id="usersTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Correo</th>
+                    <th>Rol</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Contenido dinámico -->
+            </tbody>
+        </table>
+    </main>
+
+    <!-- Modal Formulario -->
+    <div id="userModal" class="modal">
+        <div class="modal-content">
+            <h3 id="modalTitle">Nuevo Usuario</h3>
+            <form id="userForm">
+                <input type="hidden" id="userId">
+                <div class="form-group">
+                    <label>Nombre</label>
+                    <input type="text" id="nombre" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Correo</label>
+                    <input type="email" id="correo" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Contraseña</label>
+                    <input type="password" id="password" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Rol</label>
+                    <select id="rol" class="form-control" required>
+                        <option value="Administrador">Administrador</option>
+                        <option value="Operador">Operador</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Estado</label>
+                    <select id="estado" class="form-control" required>
+                        <option value="Activo">Activo</option>
+                        <option value="Inactivo">Inactivo</option>
+                    </select>
+                </div>
+                <div style="text-align: right; margin-top: 20px;">
+                    <button type="button" class="btn btn-outline" onclick="closeModal()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = '/api/usuarios';
+
+        // Validar sesión
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (!user || user.rol !== 'Administrador') {
+            alert('Acceso denegado. Se requiere rol de Administrador.');
+            window.location.href = 'login.html';
+        }
+
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            localStorage.removeItem('user');
+            window.location.href = 'login.html';
+        });
+
+        async function fetchUsers() {
+            const res = await fetch(API_URL);
+            const data = await res.json();
+            const tbody = document.querySelector('#usersTable tbody');
+            tbody.innerHTML = '';
+            data.forEach(u => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${u.id}</td>
+                        <td>${u.nombre}</td>
+                        <td>${u.correo}</td>
+                        <td>${u.rol}</td>
+                        <td>${u.estado}</td>
+                        <td class="action-btns">
+                            <button class="btn-edit" onclick='editUser(${JSON.stringify(u)})'>Editar</button>
+                            <button class="btn-delete" onclick="deleteUser(${u.id})">Eliminar</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function openModal() {
+            document.getElementById('userForm').reset();
+            document.getElementById('userId').value = '';
+            document.getElementById('modalTitle').innerText = 'Nuevo Usuario';
+            document.getElementById('userModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('userModal').style.display = 'none';
+        }
+
+        function editUser(user) {
+            document.getElementById('userId').value = user.id;
+            document.getElementById('nombre').value = user.nombre;
+            document.getElementById('correo').value = user.correo;
+            document.getElementById('password').value = user.password;
+            document.getElementById('rol').value = user.rol;
+            document.getElementById('estado').value = user.estado;
+            document.getElementById('modalTitle').innerText = 'Editar Usuario';
+            document.getElementById('userModal').style.display = 'flex';
+        }
+
+        document.getElementById('userForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('userId').value;
+            const payload = {
+                nombre: document.getElementById('nombre').value,
+                correo: document.getElementById('correo').value,
+                password: document.getElementById('password').value,
+                rol: document.getElementById('rol').value,
+                estado: document.getElementById('estado').value
+            };
+
+            const method = id ? 'PUT' : 'POST';
+            const url = id ? `${API_URL}/${id}` : API_URL;
+
+            await fetch(url, {
+                method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            closeModal();
+            fetchUsers();
+        });
+
+        async function deleteUser(id) {
+            if (confirm('¿Está seguro de eliminar este usuario?')) {
+                await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+                fetchUsers();
+            }
+        }
+
+        // Init
+        fetchUsers();
+    </script>
+</body>
+</html>
