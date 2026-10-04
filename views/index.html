@@ -76,42 +76,9 @@
                         <p class="section-subtitle">Soluciones integrales de transporte y atención médica.</p>
                     </header>
         <!--Tarjetas-->
-                    <div class="cards">
-                        <article class="card">
-                            <img class="card-img" src="img/TAB.png" alt="Traslado Asistencial Básico">
-                            <div class="card-body">
-                                <h3 class="card-title">Traslado Asistencial Básico (TAB)</h3>
-                                <p class="card-text">Traslados programados con camilla, oxígeno y personal básico capacitado.</p>
-                                <a class="card-link" href="servicios.html#tab">Más información</a>
-                            </div>
-                        </article>
-
-                        <article class="card">
-                            <img class="card-img" src="img/TAM.png" alt="Traslado Asistencial Medicalizado">
-                            <div class="card-body">
-                                <h3 class="card-title">Traslado Asistencial Medicalizado (TAM)</h3>
-                                <p class="card-text">Unidad medicalizada con médico y equipos de soporte vital avanzado.</p>
-                                <a class="card-link" href="servicios.html#tam">Más información</a>
-                            </div>
-                        </article>
-
-                        <article class="card">
-                            <img class="card-img" src="img/evento.jpg" alt="Cobertura de eventos">
-                            <div class="card-body">
-                                <h3 class="card-title">Cobertura de Eventos</h3>
-                                <p class="card-text">Acompañamiento prehospitalario para eventos deportivos, culturales y empresariales.</p>
-                                <a class="card-link" href="servicios.html#eventos">Más información</a>
-                            </div>
-                        </article>
-
-                        <article class="card">
-                            <img class="card-img" src="img/Recojer.jpg" alt="Servicio domiciliario">
-                            <div class="card-body">
-                                <h3 class="card-title">Servicio Domiciliario</h3>
-                                <p class="card-text">Atención y traslado desde tu hogar hacia centros médicos, de forma segura.</p>
-                                <a class="card-link" href="servicios.html#domiciliario">Más información</a>
-                            </div>
-                        </article>
+                    <div class="cards" id="servicios-container">
+                        <!-- Los servicios se cargarán dinámicamente aquí mediante JS -->
+                        <p style="text-align: center; width: 100%;">Cargando servicios...</p>
                     </div>
                 </div>
             </section>
@@ -195,5 +162,41 @@
         <a class="whatsapp-float" href="https://wa.me/573000000000" target="_blank" rel="noopener" aria-label="Contactar por WhatsApp">
             <img src="img/whatsapp.svg" alt="WhatsApp">
         </a>
+        
+        <script>
+            async function cargarServicios() {
+                try {
+                    const res = await fetch('/api/servicios');
+                    const servicios = await res.json();
+                    const container = document.getElementById('servicios-container');
+                    container.innerHTML = '';
+                    
+                    const activos = servicios.filter(s => s.estado === 'Activo');
+                    
+                    if (activos.length === 0) {
+                        container.innerHTML = '<p style="text-align:center; width:100%;">No hay servicios disponibles en este momento.</p>';
+                        return;
+                    }
+
+                    activos.forEach(s => {
+                        container.innerHTML += `
+                            <article class="card">
+                                <img class="card-img" src="${s.imagen}" alt="${s.nombre}" onerror="this.src='img/Portada.jpg'">
+                                <div class="card-body">
+                                    <h3 class="card-title">${s.nombre}</h3>
+                                    <p class="card-text">${s.descripcion}</p>
+                                    <a class="card-link" href="servicios.html">Más información</a>
+                                </div>
+                            </article>
+                        `;
+                    });
+                } catch (error) {
+                    console.error('Error cargando servicios:', error);
+                    document.getElementById('servicios-container').innerHTML = '<p style="text-align:center; width:100%;">Error al cargar los servicios.</p>';
+                }
+            }
+            
+            document.addEventListener('DOMContentLoaded', cargarServicios);
+        </script>
     </body>
 </html>

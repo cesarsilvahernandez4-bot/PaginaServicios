@@ -59,88 +59,8 @@
                  ======================================================== -->
             <section class="section">
                 <div class="container">
-                    <div class="service-grid">
-
-                        <!-- TAB -->
-                        <article class="service-card" id="tab">
-                            <div class="service-media">
-                                <img src="img/TAB.png" alt="Ambulancia para Traslado Asistencial Básico">
-                            </div>
-                            <div class="service-content">
-                                <h2>Traslado Asistencial Básico (TAB)</h2>
-                                <p>Traslados programados y de baja complejidad, con personal auxiliar de enfermería y equipos básicos de atención.</p>
-                                <ul class="service-features">
-                                    <li>Camilla y sillas de ruedas</li>
-                                    <li>Oxígeno y equipo de primeros auxilios</li>
-                                    <li>Auxiliar de enfermería a bordo</li>
-                                </ul>
-                                <p class="service-price">Precio referencial: <strong>desde $120.000</strong></p>
-                                <div class="service-actions">
-                                    <a class="btn btn-primary" href="contacto.html">Solicitar información</a>
-                                </div>
-                            </div>
-                        </article>
-
-                        <!-- TAM -->
-                        <article class="service-card" id="tam">
-                            <div class="service-media">
-                                <img src="img/TAM.png" alt="Ambulancia medicalizada para Traslado Asistencial Medicalizado">
-                            </div>
-                            <div class="service-content">
-                                <h2>Traslado Asistencial Medicalizado (TAM)</h2>
-                                <p>Unidad de soporte vital avanzado para pacientes de alta complejidad, con médico y equipos de monitoreo.</p>
-                                <ul class="service-features">
-                                    <li>Médico y paramédico a bordo</li>
-                                    <li>Monitoreo de signos vitales</li>
-                                    <li>Soporte vital avanzado</li>
-                                </ul>
-                                <p class="service-price">Precio referencial: <strong>desde $250.000</strong></p>
-                                <div class="service-actions">
-                                    <a class="btn btn-primary" href="contacto.html">Solicitar información</a>
-                                </div>
-                            </div>
-                        </article>
-
-                        <!-- EVENTOS -->
-                        <article class="service-card" id="eventos">
-                            <div class="service-media">
-                                <img src="img/evento.jpg" alt="Cobertura prehospitalaria de eventos">
-                            </div>
-                            <div class="service-content">
-                                <h2>Cobertura de Eventos</h2>
-                                <p>Acompañamiento prehospitalario para eventos deportivos, culturales, religiosos y empresariales.</p>
-                                <ul class="service-features">
-                                    <li>Puesto de primeros auxilios</li>
-                                    <li>Unidades de traslado disponibles</li>
-                                    <li>Personal según aforo del evento</li>
-                                </ul>
-                                <p class="service-price">Precio referencial: <strong>cotización según evento</strong></p>
-                                <div class="service-actions">
-                                    <a class="btn btn-primary" href="contacto.html">Solicitar cotización</a>
-                                </div>
-                            </div>
-                        </article>
-
-                        <!-- DOMICILIARIO -->
-                        <article class="service-card" id="domiciliario">
-                            <div class="service-media">
-                                <img src="img/Recojer.jpg" alt="Servicio de ambulancia domiciliario">
-                            </div>
-                            <div class="service-content">
-                                <h2>Servicio Domiciliario</h2>
-                                <p>Atención y traslado seguro desde tu hogar hacia centros médicos, clínicas o citas de control.</p>
-                                <ul class="service-features">
-                                    <li>Traslados puerta a puerta</li>
-                                    <li>Cobertura de citas médicas</li>
-                                    <li>Atención personalizada</li>
-                                </ul>
-                                <p class="service-price">Precio referencial: <strong>desde $90.000</strong></p>
-                                <div class="service-actions">
-                                    <a class="btn btn-primary" href="contacto.html">Solicitar información</a>
-                                </div>
-                            </div>
-                        </article>
-
+                    <div class="service-grid" id="servicios-container-detailed">
+                        <p style="text-align: center; width: 100%;">Cargando servicios detallados...</p>
                     </div>
                 </div>
             </section>
@@ -199,5 +119,48 @@
         <a class="whatsapp-float" href="https://wa.me/573000000000" target="_blank" rel="noopener" aria-label="Contactar por WhatsApp">
             <img src="img/whatsapp.svg" alt="WhatsApp">
         </a>
+        
+        <script>
+            async function cargarServicios() {
+                try {
+                    const res = await fetch('/api/servicios');
+                    const servicios = await res.json();
+                    const container = document.getElementById('servicios-container-detailed');
+                    container.innerHTML = '';
+                    
+                    const activos = servicios.filter(s => s.estado === 'Activo');
+                    
+                    if (activos.length === 0) {
+                        container.innerHTML = '<p style="text-align:center; width:100%;">No hay servicios disponibles en este momento.</p>';
+                        return;
+                    }
+
+                    activos.forEach(s => {
+                        const precioFormateado = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(s.precio);
+                        
+                        container.innerHTML += `
+                            <article class="service-card">
+                                <div class="service-media">
+                                    <img src="${s.imagen}" alt="${s.nombre}" onerror="this.src='img/Portada.jpg'">
+                                </div>
+                                <div class="service-content">
+                                    <h2>${s.nombre}</h2>
+                                    <p>${s.descripcion}</p>
+                                    <p class="service-price">Precio referencial: <strong>desde ${precioFormateado}</strong></p>
+                                    <div class="service-actions">
+                                        <a class="btn btn-primary" href="contacto.html">Solicitar información</a>
+                                    </div>
+                                </div>
+                            </article>
+                        `;
+                    });
+                } catch (error) {
+                    console.error('Error cargando servicios:', error);
+                    document.getElementById('servicios-container-detailed').innerHTML = '<p style="text-align:center; width:100%;">Error al cargar los servicios.</p>';
+                }
+            }
+            
+            document.addEventListener('DOMContentLoaded', cargarServicios);
+        </script>
     </body>
 </html>
